@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Quvel\Core;
+namespace Quvel\Core\Providers;
 
 use Exception;
 use Quvel\Core\Http\Middleware\ConfigGate;
@@ -28,7 +28,7 @@ class CoreServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/quvel-core.php',
+            __DIR__ . '/../../config/quvel-core.php',
             'quvel-core'
         );
 
