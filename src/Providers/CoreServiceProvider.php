@@ -60,7 +60,7 @@ class CoreServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/quvel-core.php' => config_path('quvel-core.php'),
+                __DIR__ . '/../../config/quvel-core.php' => config_path('quvel-core.php'),
             ], 'quvel-core-config');
 
             $this->publishes([
@@ -72,11 +72,26 @@ class CoreServiceProvider extends ServiceProvider
 
         $router = $this->app['router'];
 
-        $router->aliasMiddleware('quvel.config-gate', ConfigGate::class);
-        $router->aliasMiddleware('quvel.locale', LocaleMiddleware::class);
-        $router->aliasMiddleware('quvel.trace', TraceMiddleware::class);
+        $middlewareConfig = config('quvel-core.middleware.auto_register', []);
 
-        $router->aliasMiddleware('quvel.captcha', VerifyCaptcha::class);
-        $router->aliasMiddleware('quvel.internal-only', RequireInternalRequest::class);
+        if ($middlewareConfig['config_gate'] ?? true) {
+            $router->aliasMiddleware('quvel.config-gate', ConfigGate::class);
+        }
+
+        if ($middlewareConfig['locale'] ?? true) {
+            $router->aliasMiddleware('quvel.locale', LocaleMiddleware::class);
+        }
+
+        if ($middlewareConfig['trace'] ?? true) {
+            $router->aliasMiddleware('quvel.trace', TraceMiddleware::class);
+        }
+
+        if ($middlewareConfig['captcha'] ?? true) {
+            $router->aliasMiddleware('quvel.captcha', VerifyCaptcha::class);
+        }
+
+        if ($middlewareConfig['internal_only'] ?? true) {
+            $router->aliasMiddleware('quvel.internal-only', RequireInternalRequest::class);
+        }
     }
 }

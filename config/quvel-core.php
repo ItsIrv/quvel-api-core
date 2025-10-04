@@ -186,4 +186,40 @@ return [
          */
         'enabled' => env('TRACING_ENABLED', true),
     ],
+
+    /**
+     * Middleware Configuration
+     */
+    'middleware' => [
+        /**
+         * Automatically register middleware aliases for the application.
+         * Set individual middleware to false to disable registration.
+         */
+        'auto_register' => [
+            /**
+             * Config gate middleware - validates config requirements
+             */
+            'config_gate' => env('MIDDLEWARE_CONFIG_GATE', true),
+
+            /**
+             * Locale middleware - handles locale detection and setting
+             */
+            'locale' => env('MIDDLEWARE_LOCALE', true),
+
+            /**
+             * Trace middleware - manages distributed tracing
+             */
+            'trace' => env('MIDDLEWARE_TRACE', true),
+
+            /**
+             * Captcha middleware - handles captcha verification
+             */
+            'captcha' => env('MIDDLEWARE_CAPTCHA', true),
+
+            /**
+             * Internal request middleware - validates internal API requests
+             */
+            'internal_only' => env('MIDDLEWARE_INTERNAL_ONLY', true),
+        ],
+    ],
 ];
