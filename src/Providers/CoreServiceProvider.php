@@ -6,12 +6,15 @@ namespace Quvel\Core\Providers;
 
 use Illuminate\Contracts\Http\Kernel;
 use Quvel\Core\Captcha\CaptchaManager;
+use Quvel\Core\Database\BlueprintMacros;
 use Quvel\Core\Contracts\CaptchaManager as CaptchaManagerContract;
 use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorContract;
 use Quvel\Core\Contracts\LocaleManager as LocaleManagerContract;
+use Quvel\Core\Contracts\PublicIdGenerator as PublicIdGeneratorContract;
 use Quvel\Core\Contracts\RedirectService as RedirectServiceContract;
 use Quvel\Core\Contracts\TraceManager as TraceManagerContract;
 use Quvel\Core\Locale\LocaleManager;
+use Quvel\Core\PublicId\PublicIdManager;
 use Quvel\Core\Services\InternalRequestValidator;
 use Quvel\Core\Redirect\RedirectService;
 use Quvel\Core\Tracing\TraceManager;
@@ -46,6 +49,9 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(RedirectService::class);
         $this->app->singleton(RedirectServiceContract::class, RedirectService::class);
+
+        $this->app->singleton(PublicIdManager::class);
+        $this->app->singleton(PublicIdGeneratorContract::class, PublicIdManager::class);
     }
 
     /**
@@ -66,6 +72,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'quvel');
 
         $this->registerMiddleware();
+        $this->registerDatabaseMacros();
     }
 
     /**
@@ -109,5 +116,13 @@ class CoreServiceProvider extends ServiceProvider
                 $kernel->appendMiddlewareToGroup('api', $aliases[$alias]);
             }
         }
+    }
+
+    /**
+     * Register database blueprint macros.
+     */
+    protected function registerDatabaseMacros(): void
+    {
+        BlueprintMacros::register();
     }
 }

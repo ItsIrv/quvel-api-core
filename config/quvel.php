@@ -166,6 +166,21 @@ return [
     ],
 
     /**
+     * Public ID Configuration
+     */
+    'public_id' => [
+        /**
+         * Driver for public ID generation (ulid, uuid)
+         */
+        'driver' => env('PUBLIC_ID_DRIVER', 'ulid'),
+
+        /**
+         * Default column name for public IDs
+         */
+        'column' => env('PUBLIC_ID_COLUMN', 'public_id'),
+    ],
+
+    /**
      * Middleware Configuration
      */
     'middleware' => [
