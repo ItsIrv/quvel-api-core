@@ -158,6 +158,11 @@ return [
          * Enable distributed tracing with UUID generation
          */
         'enabled' => env('TRACING_ENABLED', true),
+
+        /**
+         * Accept trace IDs from incoming requests
+         */
+        'accept_external_trace_ids' => env('TRACING_ACCEPT_EXTERNAL', true),
     ],
 
     /**
@@ -165,34 +170,29 @@ return [
      */
     'middleware' => [
         /**
-         * Automatically register middleware aliases for the application.
-         * Set individual middleware to false to disable registration.
+         * Middleware aliases that will be registered
          */
-        'auto_register' => [
-            /**
-             * Config gate middleware - validates config requirements
-             */
-            'config_gate' => env('MIDDLEWARE_CONFIG_GATE', true),
-
-            /**
-             * Locale middleware - handles locale detection and setting
-             */
-            'locale' => env('MIDDLEWARE_LOCALE', true),
-
-            /**
-             * Trace middleware - manages distributed tracing
-             */
-            'trace' => env('MIDDLEWARE_TRACE', true),
-
-            /**
-             * Captcha middleware - handles captcha verification
-             */
-            'captcha' => env('MIDDLEWARE_CAPTCHA', true),
-
-            /**
-             * Internal request middleware - validates internal API requests
-             */
-            'internal_only' => env('MIDDLEWARE_INTERNAL_ONLY', true),
+        'aliases' => [
+            'config-gate' => \Quvel\Core\Http\Middleware\ConfigGate::class,
+            'locale' => \Quvel\Core\Http\Middleware\LocaleMiddleware::class,
+            'trace' => \Quvel\Core\Http\Middleware\TraceMiddleware::class,
+            'captcha' => \Quvel\Core\Http\Middleware\VerifyCaptcha::class,
+            'internal-only' => \Quvel\Core\Http\Middleware\RequireInternalRequest::class,
         ],
+
+        /**
+         * Middleware groups - automatically added to Laravel's middleware groups
+         */
+        'groups' => [
+            'web' => [
+                'locale',
+                'trace',
+            ],
+            'api' => [
+                'locale',
+                'trace',
+            ],
+        ],
+
     ],
 ];

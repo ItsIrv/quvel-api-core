@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Quvel\Core\Contracts;
+
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+
+/**
+ * Contract for multi-platform redirect service.
+ */
+interface RedirectService
+{
+    /**
+     * Redirect to a frontend route with optional query parameters.
+     */
+    public function redirect(string $path = '', array $queryParams = []): RedirectResponse|Response;
+
+    /**
+     * Redirect with a message parameter.
+     */
+    public function redirectWithMessage(string $path, string $message, array $extraParams = []): RedirectResponse|Response;
+
+    /**
+     * Get the full frontend URL without redirecting.
+     */
+    public function getUrl(string $path = '', array $queryParams = []): string;
+
+    /**
+     * Get URL with message parameter.
+     */
+    public function getUrlWithMessage(string $path, string $message, array $extraParams = []): string;
+
+    /**
+     * Check if current request is from a specific platform.
+     */
+    public function isPlatform(string $platform): bool;
+
+    /**
+     * Get the detected platform.
+     */
+    public function getPlatform(): string;
+}

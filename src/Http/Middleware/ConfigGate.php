@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Http\Middleware;
 
-use Quvel\Core\Services\RedirectService;
+use Quvel\Core\Contracts\RedirectService as RedirectServiceContract;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ConfigGate
 {
     public function __construct(
-        private readonly RedirectService $redirectService
+        private readonly RedirectServiceContract $redirectService
     ) {
     }
 

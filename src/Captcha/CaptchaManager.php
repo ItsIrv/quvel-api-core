@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Quvel\Core\Captcha;
 
 use Quvel\Core\Contracts\CaptchaDriverInterface;
+use Quvel\Core\Contracts\CaptchaManager as CaptchaManagerContract;
 
 /**
  * Simple captcha manager.
  */
-class CaptchaManager
+class CaptchaManager implements CaptchaManagerContract
 {
     private ?CaptchaDriverInterface $driver = null;
 

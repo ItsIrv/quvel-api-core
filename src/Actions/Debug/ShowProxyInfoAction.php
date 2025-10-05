@@ -2,11 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Quvel\Core\Http\Actions\Debug;
+namespace Quvel\Core\Actions\Debug;
 
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+
+use function Quvel\Core\Http\Actions\Debug\abort;
+use function Quvel\Core\Http\Actions\Debug\asset;
+use function Quvel\Core\Http\Actions\Debug\now;
+use function Quvel\Core\Http\Actions\Debug\response;
+use function Quvel\Core\Http\Actions\Debug\route;
+use function Quvel\Core\Http\Actions\Debug\url;
 
 /**
  * Debug action that displays proxy and request information.
