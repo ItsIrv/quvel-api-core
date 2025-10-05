@@ -6,51 +6,24 @@ return [
      */
     'captcha' => [
         /**
-         * Default captcha provider to use.
-         * Currently only 'recaptcha_v3' is supported.
+         * Whether captcha verification is enabled globally
          */
-        'provider' => env('CAPTCHA_PROVIDER', 'recaptcha_v3'),
+        'enabled' => env('CAPTCHA_ENABLED', true),
 
         /**
-         * Provider-specific configurations
+         * Captcha driver class to use.
          */
-        'providers' => [
-            'recaptcha_v3' => [
-                /**
-                 * reCAPTCHA site key (public)
-                 */
-                'site_key' => env('RECAPTCHA_SITE_KEY'),
-
-                /**
-                 * reCAPTCHA secret key (private)
-                 */
-                'secret_key' => env('RECAPTCHA_SECRET_KEY'),
-
-                /**
-                 * Google verification endpoint
-                 */
-                'verify_url' => 'https://www.google.com/recaptcha/api/siteverify',
-
-                /**
-                 * Minimum score for reCAPTCHA v3 (0.0-1.0)
-                 */
-                'score_threshold' => env('RECAPTCHA_SCORE_THRESHOLD', 0.5),
-            ],
-        ],
+        'driver' => env('CAPTCHA_DRIVER', \Quvel\Core\Captcha\GoogleRecaptchaDriver::class),
 
         /**
-         * Global captcha settings
+         * reCAPTCHA v3 score threshold (0.0-1.0)
          */
+        'score_threshold' => env('RECAPTCHA_SCORE_THRESHOLD', 0.5),
 
         /**
          * HTTP timeout in seconds for captcha verification
          */
         'timeout' => env('CAPTCHA_TIMEOUT', 30),
-
-        /**
-         * Whether captcha verification is enabled globally
-         */
-        'enabled' => env('CAPTCHA_ENABLED', true),
     ],
 
     /**

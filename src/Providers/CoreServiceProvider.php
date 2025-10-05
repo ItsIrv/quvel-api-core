@@ -10,11 +10,9 @@ use Quvel\Core\Http\Middleware\LocaleMiddleware;
 use Quvel\Core\Http\Middleware\RequireInternalRequest;
 use Quvel\Core\Http\Middleware\TraceMiddleware;
 use Quvel\Core\Http\Middleware\VerifyCaptcha;
-use Quvel\Core\Services\CaptchaService;
+use Quvel\Core\Captcha\CaptchaManager;
 use Quvel\Core\Services\InternalRequestValidator;
 use Quvel\Core\Services\RedirectService;
-use Quvel\Core\Services\GoogleRecaptchaVerifier;
-use Quvel\Core\Concerns\Security\CaptchaVerifierInterface;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -28,29 +26,20 @@ class CoreServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../../config/quvel-core.php',
-            'quvel-core'
+            __DIR__ . '/../../config/quvel.php',
+            'quvel'
         );
 
-        $this->app->singleton(CaptchaService::class);
         $this->app->singleton(InternalRequestValidator::class);
-        $this->app->singleton(GoogleRecaptchaVerifier::class);
         $this->app->singleton(RedirectService::class, function () {
             $service = new RedirectService();
-            $service->setBaseUrl(config('quvel-core.frontend.url', 'http://localhost:3000'));
-            $service->setCustomScheme(config('quvel-core.frontend.custom_scheme'));
+            $service->setBaseUrl(config('quvel.frontend.url', 'http://localhost:3000'));
+            $service->setCustomScheme(config('quvel.frontend.custom_scheme'));
 
             return $service;
         });
 
-        $this->app->bind(CaptchaVerifierInterface::class, function () {
-            $provider = config('quvel-core.captcha.provider', 'recaptcha_v3');
-
-            return match ($provider) {
-                'recaptcha_v3' => app(GoogleRecaptchaVerifier::class),
-                default => throw new Exception('Invalid captcha provider'),
-            };
-        });
+        $this->app->singleton(CaptchaManager::class);
     }
 
     /**
@@ -60,38 +49,38 @@ class CoreServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../../config/quvel-core.php' => config_path('quvel-core.php'),
-            ], 'quvel-core-config');
+                __DIR__ . '/../../config/quvel.php' => config_path('quvel.php'),
+            ], 'quvel-config');
 
             $this->publishes([
-                __DIR__ . '/../lang' => lang_path('vendor/quvel-core'),
-            ], 'quvel-core-lang');
+                __DIR__ . '/../lang' => lang_path('vendor/quvel'),
+            ], 'quvel-lang');
         }
 
-        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'quvel-core');
+        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'quvel');
 
         $router = $this->app['router'];
 
-        $middlewareConfig = config('quvel-core.middleware.auto_register', []);
+        $middlewareConfig = config('quvel.middleware.auto_register', []);
 
         if ($middlewareConfig['config_gate'] ?? true) {
-            $router->aliasMiddleware('quvel.config-gate', ConfigGate::class);
+            $router->aliasMiddleware('config-gate', ConfigGate::class);
         }
 
         if ($middlewareConfig['locale'] ?? true) {
-            $router->aliasMiddleware('quvel.locale', LocaleMiddleware::class);
+            $router->aliasMiddleware('locale', LocaleMiddleware::class);
         }
 
         if ($middlewareConfig['trace'] ?? true) {
-            $router->aliasMiddleware('quvel.trace', TraceMiddleware::class);
+            $router->aliasMiddleware('trace', TraceMiddleware::class);
         }
 
         if ($middlewareConfig['captcha'] ?? true) {
-            $router->aliasMiddleware('quvel.captcha', VerifyCaptcha::class);
+            $router->aliasMiddleware('captcha', VerifyCaptcha::class);
         }
 
         if ($middlewareConfig['internal_only'] ?? true) {
-            $router->aliasMiddleware('quvel.internal-only', RequireInternalRequest::class);
+            $router->aliasMiddleware('internal-only', RequireInternalRequest::class);
         }
     }
 }

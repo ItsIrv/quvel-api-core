@@ -37,9 +37,9 @@ enum HttpHeader: string
     public function getValue(): string
     {
         $configKey = match ($this) {
-            self::TRACE_ID => 'quvel-core.headers.trace_id',
-            self::PLATFORM => 'quvel-core.headers.platform',
-            self::SSR_KEY => 'quvel-core.headers.ssr_key',
+            self::TRACE_ID => 'quvel.headers.trace_id',
+            self::PLATFORM => 'quvel.headers.platform',
+            self::SSR_KEY => 'quvel.headers.ssr_key',
             default => null,
         };
 

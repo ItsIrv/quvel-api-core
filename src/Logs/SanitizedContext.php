@@ -75,7 +75,7 @@ class SanitizedContext implements ArrayAccess, JsonSerializable
      */
     public function toArray(): array
     {
-        if (!config('quvel-core.logging.context_enrichment.sanitize_sensitive_data', true)) {
+        if (!config('quvel.logging.context_enrichment.sanitize_sensitive_data', true)) {
             return $this->data;
         }
 

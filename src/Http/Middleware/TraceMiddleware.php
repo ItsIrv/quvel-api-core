@@ -48,7 +48,7 @@ class TraceMiddleware
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        if (!config('quvel-core.tracing.enabled', true)) {
+        if (!config('quvel.tracing.enabled', true)) {
             return $next($request);
         }
 

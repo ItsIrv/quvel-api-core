@@ -35,7 +35,7 @@ class ContextualLogger implements LoggerInterface
         ?string $channel = null,
         string $contextPrefix = ''
     ) {
-        $this->channel = $channel ?? config('quvel-core.logging.default_channel', 'stack');
+        $this->channel = $channel ?? config('quvel.logging.default_channel', 'stack');
         $this->contextPrefix = $contextPrefix;
     }
 
@@ -126,7 +126,7 @@ class ContextualLogger implements LoggerInterface
      */
     protected function enrichContext(array|SanitizedContext $context): array
     {
-        if (!config('quvel-core.logging.context_enrichment.enabled', true)) {
+        if (!config('quvel.logging.context_enrichment.enabled', true)) {
             return $context instanceof SanitizedContext ? $context->toArray() : $context;
         }
 
@@ -138,7 +138,7 @@ class ContextualLogger implements LoggerInterface
             $context = $context->toArray();
         }
 
-        if (class_exists(Context::class) && config('quvel-core.logging.include_trace_id', true)) {
+        if (class_exists(Context::class) && config('quvel.logging.include_trace_id', true)) {
             $contextFacade = app(Context::class);
 
             if ($contextFacade->has('trace_id')) {

@@ -2,29 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Quvel\Core\Services;
+namespace Quvel\Core\Captcha;
 
-use Quvel\Core\Concerns\Security\CaptchaVerifierInterface;
-use Quvel\Core\Concerns\Security\CaptchaVerificationResult;
-use Illuminate\Http\Client\Factory as HttpClient;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\Factory as HttpClient;
+use Quvel\Core\Contracts\CaptchaDriverInterface;
 
 /**
- * Google reCAPTCHA v3 verifier implementation.
+ * Google reCAPTCHA v3 handler.
  */
-class GoogleRecaptchaVerifier implements CaptchaVerifierInterface
+class GoogleRecaptchaDriver implements CaptchaDriverInterface
 {
     public function __construct(
         private readonly HttpClient $http
     ) {
     }
 
-    /**
-     * Verify a reCAPTCHA token.
-     */
     public function verify(string $token, ?string $ip = null, ?string $action = null): CaptchaVerificationResult
     {
-        $secretKey = config('quvel-core.captcha.providers.recaptcha_v3.secret_key');
+        $secretKey = config('services.recaptcha.secret_key');
 
         if (!$secretKey) {
             return CaptchaVerificationResult::failure([CaptchaVerificationResult::ERROR_MISSING_SECRET]);
@@ -32,9 +28,9 @@ class GoogleRecaptchaVerifier implements CaptchaVerifierInterface
 
         try {
             $response = $this->http
-                ->timeout(config('quvel-core.captcha.timeout', 30))
+                ->timeout(config('quvel.captcha.timeout', 30))
                 ->asForm()
-                ->post(config('quvel-core.captcha.providers.recaptcha_v3.verify_url'), [
+                ->post('https://www.google.com/recaptcha/api/siteverify', [
                     'secret' => $secretKey,
                     'response' => $token,
                     'remoteip' => $ip,
@@ -63,17 +59,11 @@ class GoogleRecaptchaVerifier implements CaptchaVerifierInterface
         }
     }
 
-    /**
-     * Check if provider supports scoring.
-     */
     public function supportsScoring(): bool
     {
         return true;
     }
 
-    /**
-     * Get default score threshold.
-     */
     public function getDefaultScoreThreshold(): ?float
     {
         return 0.5;

@@ -2,17 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Quvel\Core\Concerns\Security;
+namespace Quvel\Core\Captcha;
 
 /**
  * Result object for captcha verification operations.
- * Provides detailed information about the verification attempt.
  */
 readonly class CaptchaVerificationResult
 {
-    /**
-     * Captcha error codes
-     */
     public const string ERROR_MISSING_SECRET = 'missing-input-secret';
     public const string ERROR_INVALID_RESPONSE = 'invalid-input-response';
     public const string ERROR_NETWORK_ERROR = 'network-error';
@@ -27,9 +23,6 @@ readonly class CaptchaVerificationResult
     ) {
     }
 
-    /**
-     * Create a successful verification result.
-     */
     public static function success(
         ?float $score = null,
         ?string $action = null,
@@ -45,9 +38,6 @@ readonly class CaptchaVerificationResult
         );
     }
 
-    /**
-     * Create a failed verification result.
-     */
     public static function failure(array $errorCodes = []): self
     {
         return new self(
@@ -56,41 +46,26 @@ readonly class CaptchaVerificationResult
         );
     }
 
-    /**
-     * Check if the verification was successful.
-     */
     public function isSuccessful(): bool
     {
         return $this->success;
     }
 
-    /**
-     * Check if the verification failed.
-     */
     public function isFailed(): bool
     {
         return !$this->success;
     }
 
-    /**
-     * Check if the verification has a score (reCAPTCHA v3).
-     */
     public function hasScore(): bool
     {
         return $this->score !== null;
     }
 
-    /**
-     * Check if the score meets the minimum threshold.
-     */
     public function meetsScoreThreshold(float $threshold): bool
     {
         return $this->hasScore() && $this->score >= $threshold;
     }
 
-    /**
-     * Check if there are any errors.
-     */
     public function hasErrors(): bool
     {
         return !empty($this->errorCodes);

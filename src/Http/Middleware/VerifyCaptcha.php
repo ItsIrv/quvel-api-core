@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Http\Middleware;
 
-use Quvel\Core\Services\CaptchaService;
+use Quvel\Core\Captcha\CaptchaManager;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 class VerifyCaptcha
 {
     public function __construct(
-        private readonly CaptchaService $captchaService
+        private readonly CaptchaManager $captchaManager
     ) {
     }
 
@@ -24,7 +24,7 @@ class VerifyCaptcha
      */
     public function handle(Request $request, Closure $next, string $inputField = 'captcha_token'): mixed
     {
-        if (!$this->captchaService->isEnabled()) {
+        if (!$this->captchaManager->isEnabled()) {
             return $next($request);
         }
 
@@ -33,27 +33,27 @@ class VerifyCaptcha
         if (!$token) {
             return response()->json([
                 'success' => false,
-                'message' => __('quvel-core::messages.captcha.token_required'),
+                'message' => __('quvel::messages.captcha.token_required'),
             ], 422);
         }
 
-        $result = $this->captchaService->verify((string) $token, $request->ip());
+        $result = $this->captchaManager->verify((string) $token, $request->ip());
 
         if ($result->isFailed()) {
             return response()->json([
                 'success' => false,
-                'message' => __('quvel-core::messages.captcha.verification_failed'),
+                'message' => __('quvel::messages.captcha.verification_failed'),
                 'errors' => $result->errorCodes,
             ], 422);
         }
 
         if ($result->hasScore()) {
-            $threshold = config('quvel-core.captcha.providers.recaptcha_v3.score_threshold', 0.5);
+            $threshold = config('quvel.captcha.score_threshold', 0.5);
 
             if (!$result->meetsScoreThreshold($threshold)) {
                 return response()->json([
                     'success' => false,
-                    'message' => __('quvel-core::messages.captcha.score_too_low'),
+                    'message' => __('quvel::messages.captcha.score_too_low'),
                     'score' => $result->score,
                 ], 422);
             }
