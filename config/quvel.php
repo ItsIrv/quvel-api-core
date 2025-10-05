@@ -80,33 +80,28 @@ return [
     ],
 
     /**
-     * Logging Configuration
+     * Logging Helpers Configuration
      */
     'logging' => [
         /**
-         * Default log channel for contextual logger
+         * Global sanitization rules for SanitizedContext
          */
-        'default_channel' => env('LOG_CHANNEL', 'stack'),
-
-        /**
-         * Whether to automatically include trace ID in log context
-         */
-        'include_trace_id' => env('LOG_INCLUDE_TRACE_ID', true),
-
-        /**
-         * Context enrichment settings
-         */
-        'context_enrichment' => [
-            /**
-             * Enable automatic context enrichment
-             */
-            'enabled' => env('LOG_CONTEXT_ENRICHMENT', true),
-
-            /**
-             * Sanitize PII in log data
-             */
-            'sanitize_sensitive_data' => env('LOG_SANITIZE_SENSITIVE', true),
+        'sanitization_rules' => [
+            'password' => 'remove',
+            'password_confirmation' => 'remove',
+            'token' => 'hash',
+            'api_key' => 'hash',
+            'secret' => 'remove',
+            'email' => 'domain_only',
+            'credit_card' => 'mask',
+            'ssn' => 'mask',
+            'social_security_number' => 'mask',
         ],
+
+        /**
+         * Enable global sanitization rules by default
+         */
+        'use_global_sanitization' => env('LOG_USE_GLOBAL_SANITIZATION', true),
     ],
 
     /**

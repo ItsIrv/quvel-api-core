@@ -7,7 +7,6 @@ namespace Quvel\Core\Logs;
 use Illuminate\Log\LogManager;
 use Psr\Log\LoggerInterface;
 use Closure;
-use Illuminate\Support\Facades\Context;
 use Throwable;
 
 /**
@@ -16,9 +15,9 @@ use Throwable;
 class ContextualLogger implements LoggerInterface
 {
     /**
-     * Custom context.
+     * Context enrichers.
      */
-    protected static ?Closure $customContext = null;
+    protected static array $enrichers = [];
 
     /**
      * The log channel to use.
@@ -40,11 +39,43 @@ class ContextualLogger implements LoggerInterface
     }
 
     /**
-     * Set a custom context callback.
+     * Add a context enricher.
      */
-    public static function setCustomContext(?Closure $callback): void
+    public static function addEnricher(string $name, Closure $enricher): void
     {
-        static::$customContext = $callback;
+        static::$enrichers[$name] = $enricher;
+    }
+
+    /**
+     * Remove a context enricher.
+     */
+    public static function removeEnricher(string $name): void
+    {
+        unset(static::$enrichers[$name]);
+    }
+
+    /**
+     * Clear all enrichers.
+     */
+    public static function clearEnrichers(): void
+    {
+        static::$enrichers = [];
+    }
+
+    /**
+     * Create a new logger instance with a different channel and optional prefix.
+     */
+    public function channel(string $channel, ?string $prefix = null): static
+    {
+        return new static($this->logger, $channel, $prefix ?? $this->contextPrefix);
+    }
+
+    /**
+     * Create a new logger instance with a context prefix.
+     */
+    public function withPrefix(string $prefix): static
+    {
+        return new static($this->logger, $this->channel, $prefix);
     }
 
     /**
@@ -126,38 +157,26 @@ class ContextualLogger implements LoggerInterface
      */
     protected function enrichContext(array|SanitizedContext $context): array
     {
-        if (!config('quvel.logging.context_enrichment.enabled', true)) {
-            return $context instanceof SanitizedContext ? $context->toArray() : $context;
-        }
-
-        if (static::$customContext !== null) {
-            return (static::$customContext)($context, $this->contextPrefix);
-        }
-
         if ($context instanceof SanitizedContext) {
             $context = $context->toArray();
         }
 
-        if (class_exists(Context::class) && config('quvel.logging.include_trace_id', true)) {
-            $contextFacade = app(Context::class);
-
-            if ($contextFacade->has('trace_id')) {
-                try {
-                    $context['trace_id'] = $contextFacade->get('trace_id');
-                } catch (Throwable) {
-                    //
-                }
+        foreach (static::$enrichers as $enricher) {
+            try {
+                $context = $enricher($context, $this->contextPrefix) ?: $context;
+            } catch (Throwable) {
+                // Silently continue if enricher fails
             }
         }
 
         if ($this->contextPrefix !== '' && count($context) > 0) {
-            $prefixedContext = [];
+            $prefixed = [];
 
             foreach ($context as $key => $value) {
-                $prefixedContext["$this->contextPrefix.$key"] = $value;
+                $prefixed["$this->contextPrefix.$key"] = $value;
             }
 
-            return $prefixedContext;
+            return $prefixed;
         }
 
         return $context;

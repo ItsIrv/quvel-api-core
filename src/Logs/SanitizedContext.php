@@ -6,7 +6,6 @@ namespace Quvel\Core\Logs;
 
 use ArrayAccess;
 use JsonSerializable;
-use Closure;
 
 /**
  * Context wrapper that applies sanitization rules to sensitive data before logging.
@@ -24,25 +23,12 @@ class SanitizedContext implements ArrayAccess, JsonSerializable
     public const string REMOVE = 'remove';
 
     /**
-     * Custom sanitizer function.
-     */
-    protected static ?Closure $customSanitizer = null;
-
-    /**
      * Create a new sanitized context.
      */
     public function __construct(
         private array $data,
         private readonly array $sanitizeRules = []
     ) {
-    }
-
-    /**
-     * Set a custom sanitizer function.
-     */
-    public static function setCustomSanitizer(?Closure $sanitizer): void
-    {
-        static::$customSanitizer = $sanitizer;
     }
 
     /**
@@ -54,6 +40,20 @@ class SanitizedContext implements ArrayAccess, JsonSerializable
     }
 
     /**
+     * Create with global sanitization rules from config.
+     */
+    public static function fromGlobal(array $data): self
+    {
+        if (!config('quvel.logging.use_global_sanitization', true)) {
+            return new self($data);
+        }
+
+        $globalRules = config('quvel.logging.sanitization_rules', []);
+
+        return new self($data, $globalRules);
+    }
+
+    /**
      * Create with common PII sanitization rules.
      */
     public static function forPii(array $data): self
@@ -61,6 +61,7 @@ class SanitizedContext implements ArrayAccess, JsonSerializable
         return new self($data, [
             'email' => self::DOMAIN_ONLY,
             'password' => self::REMOVE,
+            'password_confirmation' => self::REMOVE,
             'token' => self::HASH,
             'api_key' => self::HASH,
             'secret' => self::REMOVE,
@@ -75,14 +76,6 @@ class SanitizedContext implements ArrayAccess, JsonSerializable
      */
     public function toArray(): array
     {
-        if (!config('quvel.logging.context_enrichment.sanitize_sensitive_data', true)) {
-            return $this->data;
-        }
-
-        if (static::$customSanitizer !== null) {
-            return (static::$customSanitizer)($this->data, $this->sanitizeRules);
-        }
-
         $sanitized = [];
 
         foreach ($this->data as $key => $value) {
