@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Str;
 use Quvel\Core\Contracts\TraceManager as TraceManagerContract;
 use Quvel\Core\Enums\HttpHeader;
+use Quvel\Core\Events\PublicTraceAccepted;
 
 /**
  * Trace manager for distributed tracing with UUID generation.
@@ -47,6 +48,13 @@ class TraceManager implements TraceManagerContract
         $headerTraceId = $request->header(HttpHeader::TRACE_ID->getValue());
 
         if ($headerTraceId && $this->shouldAcceptTraceHeader($request, $headerTraceId)) {
+            PublicTraceAccepted::dispatch(
+                traceId: $headerTraceId,
+                endpoint: $request->getPathInfo(),
+                ipAddress: $request->ip(),
+                userAgent: $request->userAgent()
+            );
+
             return (string) $headerTraceId;
         }
 

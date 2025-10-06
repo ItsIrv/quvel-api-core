@@ -6,6 +6,8 @@ namespace Quvel\Core\Services;
 
 use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorContract;
 use Quvel\Core\Enums\HttpHeader;
+use Quvel\Core\Events\InternalRequestFailed;
+use Quvel\Core\Events\InternalRequestPassed;
 use Illuminate\Http\Request;
 use Closure;
 
@@ -33,10 +35,31 @@ class InternalRequestValidator implements InternalRequestValidatorContract
     public function isInternalRequest(Request $request): bool
     {
         if (static::$customValidator !== null) {
-            return (static::$customValidator)($request);
+            $isValid = (static::$customValidator)($request);
+            $this->dispatchEvent($request, $isValid, $isValid ? null : 'Custom validator failed');
+
+            return $isValid;
         }
 
-        return $this->isValidIp($request) && $this->isValidApiKey($request);
+        $isValidIp = $this->isValidIp($request);
+        $isValidApiKey = $this->isValidApiKey($request);
+        $isValid = $isValidIp && $isValidApiKey;
+
+        $reason = null;
+
+        if (!$isValid) {
+            if (!$isValidIp && !$isValidApiKey) {
+                $reason = 'Invalid IP and API key';
+            } elseif (!$isValidIp) {
+                $reason = 'Invalid IP address';
+            } else {
+                $reason = 'Invalid API key';
+            }
+        }
+
+        $this->dispatchEvent($request, $isValid, $reason);
+
+        return $isValid;
     }
 
     /**
@@ -72,5 +95,30 @@ class InternalRequestValidator implements InternalRequestValidatorContract
         $providedKey = $request->header(HttpHeader::SSR_KEY->getValue());
 
         return hash_equals($expectedKey, $providedKey ?? '');
+    }
+
+    /**
+     * Dispatch the appropriate event based on validation result.
+     */
+    private function dispatchEvent(Request $request, bool $isValid, ?string $reason): void
+    {
+        $token = $request->header(HttpHeader::SSR_KEY->getValue());
+        $ipAddress = $request->ip();
+        $userAgent = $request->userAgent();
+
+        if ($isValid) {
+            InternalRequestPassed::dispatch(
+                token: $token ?? 'none',
+                ipAddress: $ipAddress,
+                userAgent: $userAgent
+            );
+        } else {
+            InternalRequestFailed::dispatch(
+                reason: $reason ?? 'Unknown validation failure',
+                token: $token,
+                ipAddress: $ipAddress,
+                userAgent: $userAgent
+            );
+        }
     }
 }
