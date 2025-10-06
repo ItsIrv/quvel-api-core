@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Quvel\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Quvel\Core\Platform\Detector;
+use Quvel\Core\Contracts\PlatformDetector;
 
 /**
  * Platform detection facade.
@@ -14,12 +14,12 @@ use Quvel\Core\Platform\Detector;
  * @method static bool isPlatform(string $platform) Check if current request is from a specific platform
  * @method static bool supportsAppRedirects() Check if platform supports app redirects
  *
- * @see Detector
+ * @see PlatformDetector
  */
 class Platform extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return Detector::class;
+        return PlatformDetector::class;
     }
 }

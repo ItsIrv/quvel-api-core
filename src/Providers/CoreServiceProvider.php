@@ -10,6 +10,7 @@ use Quvel\Core\Database\BlueprintMacros;
 use Quvel\Core\Contracts\CaptchaManager as CaptchaManagerContract;
 use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorContract;
 use Quvel\Core\Contracts\LocaleManager as LocaleManagerContract;
+use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;
 use Quvel\Core\Contracts\PublicIdGenerator as PublicIdGeneratorContract;
 use Quvel\Core\Contracts\RedirectService as RedirectServiceContract;
 use Quvel\Core\Contracts\TraceManager as TraceManagerContract;
@@ -58,6 +59,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(ContextualLogger::class);
 
         $this->app->scoped(Detector::class);
+        $this->app->scoped(PlatformDetectorContract::class, Detector::class);
     }
 
     /**
@@ -71,11 +73,17 @@ class CoreServiceProvider extends ServiceProvider
             ], 'quvel-config');
 
             $this->publishes([
-                __DIR__ . '/../lang' => lang_path('vendor/quvel'),
+                __DIR__ . '/../../lang' => lang_path('vendor/quvel'),
             ], 'quvel-lang');
+
+            $this->publishes([
+                __DIR__ . '/../../resources/views' => resource_path('views/vendor/quvel'),
+            ], 'quvel-views');
         }
 
-        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'quvel');
+        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'quvel');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'quvel');
+
 
         $this->registerMiddleware();
         $this->registerDatabaseMacros();

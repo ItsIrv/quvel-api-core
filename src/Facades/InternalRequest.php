@@ -6,7 +6,7 @@ namespace Quvel\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Http\Request;
-use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorContract;
+use Quvel\Core\Contracts\InternalRequestValidator;
 
 /**
  * Internal request validation facade.
@@ -19,6 +19,6 @@ class InternalRequest extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return InternalRequestValidatorContract::class;
+        return InternalRequestValidator::class;
     }
 }

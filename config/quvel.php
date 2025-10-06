@@ -160,6 +160,26 @@ return [
         'landing_page_timeout' => env('FRONTEND_LANDING_PAGE_TIMEOUT', 5),
 
         /**
+         * View configuration for redirect pages
+         */
+        'views' => [
+            /**
+             * Countdown redirect view for redirect_mode 'landing_page'
+             */
+            'countdown_redirect' => env('FRONTEND_COUNTDOWN_VIEW', 'quvel::redirect.countdown'),
+        ],
+
+        /**
+         * Theme configuration
+         */
+        'theme' => [
+            /**
+             * Primary brand color for buttons and accents
+             */
+            'primary_color' => env('FRONTEND_THEME_PRIMARY', '#3b82f6'),
+        ],
+
+        /**
          * Allowed domains for secure redirects
          */
         'allowed_redirect_domains' => explode(',', env('FRONTEND_ALLOWED_REDIRECT_DOMAINS', '')),

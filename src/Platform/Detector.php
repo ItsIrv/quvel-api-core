@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Quvel\Core\Platform;
 
 use Illuminate\Http\Request;
+use Quvel\Core\Contracts\PlatformDetector;
 use Quvel\Core\Enums\HttpHeader;
 
 /**
  * Platform detection for identifying app types from requests.
  */
-class Detector
+class Detector implements PlatformDetector
 {
     public function __construct(
         private readonly Request $request

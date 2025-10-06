@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Redirect;
 
-use Illuminate\Http\Request;
 use Quvel\Core\Contracts\RedirectService as RedirectServiceContract;
-use Quvel\Core\Enums\HttpHeader;
+use Quvel\Core\Facades\Platform;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 
@@ -58,10 +57,8 @@ class RedirectService implements RedirectServiceContract
      */
     public function redirect(string $path = '', array $queryParams = []): RedirectResponse|Response
     {
-        $platform = $this->getPlatform();
-
-        if ($platform === 'web') {
-            return app('redirect')->away($this->buildWebUrl($path, $queryParams));
+        if (Platform::isPlatform('web')) {
+            return redirect()->away($this->buildWebUrl($path, $queryParams));
         }
 
         return $this->redirectToApp($path, $queryParams);
@@ -102,9 +99,9 @@ class RedirectService implements RedirectServiceContract
         $mode = $redirectMode ?? config('quvel.frontend.redirect_mode', 'universal_links');
 
         return match ($mode) {
-            'custom_scheme' => app('redirect')->away($this->buildCustomSchemeUrl($path, $queryParams)),
+            'custom_scheme' => redirect()->away($this->buildCustomSchemeUrl($path, $queryParams)),
             'landing_page' => $this->showLandingPage($path, $queryParams),
-            default => app('redirect')->away($this->buildWebUrl($path, $queryParams)),
+            default => redirect()->away($this->buildWebUrl($path, $queryParams)),
         };
     }
 
@@ -119,9 +116,7 @@ class RedirectService implements RedirectServiceContract
      */
     public function getUrl(string $path = '', array $queryParams = []): string
     {
-        $platform = $this->getPlatform();
-
-        if ($platform === 'web') {
+        if (Platform::isPlatform('web')) {
             return $this->buildWebUrl($path, $queryParams);
         }
 
@@ -155,42 +150,27 @@ class RedirectService implements RedirectServiceContract
      */
     public function isPlatform(string $platform): bool
     {
-        return $this->getPlatform() === $platform;
+        return Platform::isPlatform($platform);
     }
 
     /**
      * Get the detected platform type.
      *
-     * Detects platform from X-Platform header sent by apps:
-     * - 'mobile': Capacitor, Cordova apps
-     * - 'desktop': Electron, Tauri apps
-     * - 'web': Regular browsers
-     *
      * @return string Platform type ('web', 'mobile', 'desktop')
      */
     public function getPlatform(): string
     {
-        $request = app(Request::class);
-        $platformHeader = $request->header(HttpHeader::PLATFORM->getValue());
-
-        return match ($platformHeader) {
-            'capacitor', 'cordova' => 'mobile',
-            'electron', 'tauri' => 'desktop',
-            default => 'web',
-        };
+        return Platform::getPlatform();
     }
 
     /**
      * Check if the current platform supports app redirects.
      *
-     * App redirects are supported for mobile and desktop platforms.
-     * Web platforms always use regular redirects.
-     *
      * @return bool True if platform supports app redirects
      */
     public function supportsAppRedirects(): bool
     {
-        return in_array($this->getPlatform(), ['mobile', 'desktop']);
+        return Platform::supportsAppRedirects();
     }
 
     /**
@@ -278,12 +258,13 @@ class RedirectService implements RedirectServiceContract
         $appUrl = $this->buildCustomSchemeUrl($path, $queryParams);
         $webUrl = $this->buildWebUrl($path, $queryParams);
         $timeout = config('quvel.frontend.landing_page_timeout', 5);
+        $view = config('quvel.frontend.views.countdown_redirect', 'quvel::redirect.countdown');
 
-        return app('response')->view('redirect-landing-page', [
+        return response()->view($view, [
             'appUrl' => $appUrl,
             'webUrl' => $webUrl,
             'timeout' => $timeout,
-            'platform' => $this->getPlatform(),
+            'platform' => Platform::getPlatform(),
         ]);
     }
 

@@ -6,7 +6,7 @@ namespace Quvel\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use Quvel\Core\Captcha\CaptchaVerificationResult;
-use Quvel\Core\Contracts\CaptchaManager as CaptchaManagerContract;
+use Quvel\Core\Contracts\CaptchaManager;
 
 /**
  * Captcha facade.
@@ -20,6 +20,6 @@ class Captcha extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return CaptchaManagerContract::class;
+        return CaptchaManager::class;
     }
 }

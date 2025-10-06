@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Quvel\Core\Concerns;
 
 use Illuminate\Database\Eloquent\Model;
-use Quvel\Core\Contracts\PublicIdGenerator;
+use Quvel\Core\Facades\PublicId;
 
 /**
  * Trait for models that need public IDs (UUID/ULID) alongside auto-increment IDs.
@@ -37,7 +37,7 @@ trait HasPublicId
      */
     public function generatePublicId(): string
     {
-        return app(PublicIdGenerator::class)->generate();
+        return PublicId::generate();
     }
 
     /**
