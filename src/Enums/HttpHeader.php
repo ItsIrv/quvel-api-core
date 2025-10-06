@@ -44,7 +44,9 @@ enum HttpHeader: string
         };
 
         if ($configKey && function_exists('config')) {
-            return config($configKey, $this->value);
+            $configValue = config($configKey);
+
+            return $configValue ?? $this->value;
         }
 
         return $this->value;

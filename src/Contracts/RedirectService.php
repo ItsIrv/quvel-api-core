@@ -13,7 +13,7 @@ use Illuminate\Http\Response;
 interface RedirectService
 {
     /**
-     * Redirect to a frontend route with optional query parameters.
+     * Smart redirect based on platform and configured redirect mode.
      */
     public function redirect(string $path = '', array $queryParams = []): RedirectResponse|Response;
 
@@ -23,7 +23,12 @@ interface RedirectService
     public function redirectWithMessage(string $path, string $message, array $extraParams = []): RedirectResponse|Response;
 
     /**
-     * Get the full frontend URL without redirecting.
+     * Redirect user back to their app (for browser contexts like Socialite).
+     */
+    public function redirectToApp(string $path = '', array $queryParams = [], ?string $redirectMode = null): RedirectResponse|Response;
+
+    /**
+     * Get the frontend URL without redirecting.
      */
     public function getUrl(string $path = '', array $queryParams = []): string;
 
@@ -41,4 +46,14 @@ interface RedirectService
      * Get the detected platform.
      */
     public function getPlatform(): string;
+
+    /**
+     * Check if the current platform supports app redirects.
+     */
+    public function supportsAppRedirects(): bool;
+
+    /**
+     * Validate if a redirect URL is safe.
+     */
+    public function isValidRedirectUrl(string $url): bool;
 }

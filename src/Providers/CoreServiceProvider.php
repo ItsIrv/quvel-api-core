@@ -15,6 +15,7 @@ use Quvel\Core\Contracts\RedirectService as RedirectServiceContract;
 use Quvel\Core\Contracts\TraceManager as TraceManagerContract;
 use Quvel\Core\Locale\LocaleManager;
 use Quvel\Core\Logs\ContextualLogger;
+use Quvel\Core\Platform\Detector;
 use Quvel\Core\PublicId\PublicIdManager;
 use Quvel\Core\Services\InternalRequestValidator;
 use Quvel\Core\Redirect\RedirectService;
@@ -55,6 +56,8 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(PublicIdGeneratorContract::class, PublicIdManager::class);
 
         $this->app->singleton(ContextualLogger::class);
+
+        $this->app->scoped(Detector::class);
     }
 
     /**

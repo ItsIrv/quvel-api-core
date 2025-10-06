@@ -134,8 +134,8 @@ return [
         'url' => env('FRONTEND_URL', 'http://localhost:3000'),
 
         /**
-         * Custom URL scheme for mobile/desktop deep links (e.g., 'myapp')
-         * Use null to disable deep linking
+         * Custom URL scheme for mobile/desktop apps (e.g., 'myapp')
+         * Used when redirect_mode is 'custom_scheme'
          */
         'custom_scheme' => env('FRONTEND_CUSTOM_SCHEME'),
 
@@ -143,6 +143,26 @@ return [
          * Internal API URL for server-side requests from SSR
          */
         'internal_api_url' => env('FRONTEND_INTERNAL_API_URL'),
+
+        /**
+         * Redirect mode for getting users back to apps
+         * - 'universal_links': Use HTTPS URLs (requires App Site Association setup)
+         * - 'custom_scheme': Use custom scheme URLs (myapp://)
+         * - 'landing_page': Show intermediate page with countdown/button
+         * - 'web_only': Always use web URLs
+         */
+        'redirect_mode' => env('FRONTEND_REDIRECT_MODE', 'universal_links'),
+
+        /**
+         * Timeout in seconds for landing page countdown
+         * Only used when redirect_mode is 'landing_page'
+         */
+        'landing_page_timeout' => env('FRONTEND_LANDING_PAGE_TIMEOUT', 5),
+
+        /**
+         * Allowed domains for secure redirects
+         */
+        'allowed_redirect_domains' => explode(',', env('FRONTEND_ALLOWED_REDIRECT_DOMAINS', '')),
     ],
 
     /**
@@ -188,6 +208,7 @@ return [
             'trace' => \Quvel\Core\Http\Middleware\TraceMiddleware::class,
             'captcha' => \Quvel\Core\Http\Middleware\VerifyCaptcha::class,
             'internal-only' => \Quvel\Core\Http\Middleware\RequireInternalRequest::class,
+            'platform-detection' => \Quvel\Core\Http\Middleware\PlatformDetectionMiddleware::class,
         ],
 
         /**
@@ -195,10 +216,12 @@ return [
          */
         'groups' => [
             'web' => [
+                'platform-detection',
                 'locale',
                 'trace',
             ],
             'api' => [
+                'platform-detection',
                 'locale',
                 'trace',
             ],

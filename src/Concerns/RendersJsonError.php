@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Quvel\Core\Traits;
+namespace Quvel\Core\Concerns;
 
 use Illuminate\Http\JsonResponse;
 
