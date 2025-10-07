@@ -228,6 +228,91 @@ return [
     ],
 
     /**
+     * Device Management Configuration
+     */
+    'devices' => [
+        /**
+         * Enable device registration and management
+         */
+        'enabled' => env('DEVICES_ENABLED', true),
+
+        /**
+         * Allow anonymous device tracking (without user authentication)
+         */
+        'allow_anonymous' => env('DEVICES_ALLOW_ANONYMOUS', false),
+
+        /**
+         * Cleanup inactive devices after this many days
+         */
+        'cleanup_inactive_after_days' => env('DEVICES_CLEANUP_DAYS', 90),
+
+        /**
+         * Maximum devices allowed per user
+         */
+        'max_devices_per_user' => env('DEVICES_MAX_PER_USER', 10),
+    ],
+
+    /**
+     * Push Notification Configuration
+     */
+    'push' => [
+        /**
+         * Enable push notification system
+         */
+        'enabled' => env('PUSH_ENABLED', true),
+
+        /**
+         * Push notification drivers to enable
+         */
+        'drivers' => explode(',', env('PUSH_DRIVERS', 'fcm,apns,web')),
+
+        /**
+         * Firebase Cloud Messaging configuration
+         */
+        'fcm' => [
+            'server_key' => env('FCM_SERVER_KEY'),
+            'project_id' => env('FCM_PROJECT_ID'),
+        ],
+
+        /**
+         * Apple Push Notification Service configuration
+         */
+        'apns' => [
+            'key_path' => env('APNS_KEY_PATH'),
+            'key_id' => env('APNS_KEY_ID'),
+            'team_id' => env('APNS_TEAM_ID'),
+            'bundle_id' => env('APNS_BUNDLE_ID'),
+            'environment' => env('APNS_ENVIRONMENT', 'sandbox'),
+        ],
+
+        /**
+         * Web Push configuration
+         */
+        'web_push' => [
+            'vapid_subject' => env('VAPID_SUBJECT'),
+            'vapid_public_key' => env('VAPID_PUBLIC_KEY'),
+            'vapid_private_key' => env('VAPID_PRIVATE_KEY'),
+        ],
+
+        /**
+         * Batch size for bulk notifications
+         */
+        'batch_size' => env('PUSH_BATCH_SIZE', 1000),
+    ],
+
+    /**
+     * Device Targeting Configuration
+     */
+    'targeting' => [
+        /**
+         * Default notification scope
+         * - 'requesting_device': Only notify the device that made the request
+         * - 'all_user_devices': Notify all devices for the user
+         */
+        'default_scope' => env('TARGETING_DEFAULT_SCOPE', 'requesting_device'),
+    ],
+
+    /**
      * Middleware Configuration
      */
     'middleware' => [
@@ -241,6 +326,7 @@ return [
             'captcha' => \Quvel\Core\Http\Middleware\VerifyCaptcha::class,
             'internal-only' => \Quvel\Core\Http\Middleware\RequireInternalRequest::class,
             'platform-detection' => \Quvel\Core\Http\Middleware\PlatformDetectionMiddleware::class,
+            'device-detection' => \Quvel\Core\Http\Middleware\DeviceDetectionMiddleware::class,
         ],
 
         /**
@@ -249,11 +335,13 @@ return [
         'groups' => [
             'web' => [
                 'platform-detection',
+                'device-detection',
                 'locale',
                 'trace',
             ],
             'api' => [
                 'platform-detection',
+                'device-detection',
                 'locale',
                 'trace',
             ],

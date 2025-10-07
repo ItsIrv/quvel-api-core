@@ -24,7 +24,7 @@ use Quvel\Core\Logs\ContextualLogger;
 use Quvel\Core\Platform\Detector;
 use Quvel\Core\PublicId\PublicIdManager;
 use Quvel\Core\Services\InternalRequestValidator;
-use Quvel\Core\Services\DeviceTargetingService;
+use Quvel\Core\Targeting\DeviceTargetingService;
 use Quvel\Core\Redirect\RedirectService;
 use Quvel\Core\Tracing\TraceManager;
 use Illuminate\Support\ServiceProvider;

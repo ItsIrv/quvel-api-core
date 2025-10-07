@@ -25,13 +25,11 @@ class Detector implements PlatformDetector
      */
     public function getPlatform(): string
     {
-        $platformHeader = $this->request->header(HttpHeader::PLATFORM->getValue());
+        $platform = PlatformType::tryFrom(
+            $this->request->header(HttpHeader::PLATFORM->getValue())
+        );
 
-        return match ($platformHeader) {
-            'capacitor', 'cordova' => 'mobile',
-            'electron', 'tauri' => 'desktop',
-            default => 'web',
-        };
+        return $platform?->getMainMode() ?? PlatformType::WEB->value;
     }
 
     /**
@@ -52,6 +50,13 @@ class Detector implements PlatformDetector
      */
     public function supportsAppRedirects(): bool
     {
-        return in_array($this->getPlatform(), ['mobile', 'desktop']);
+        return in_array(
+            $this->getPlatform(),
+            [
+                PlatformType::MOBILE->value,
+                PlatformType::DESKTOP->value
+            ],
+            true
+        );
     }
 }

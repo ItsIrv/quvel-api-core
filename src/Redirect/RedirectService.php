@@ -8,6 +8,7 @@ use Quvel\Core\Contracts\RedirectService as RedirectServiceContract;
 use Quvel\Core\Facades\Platform;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Quvel\Core\Platform\PlatformType;
 
 /**
  * Multi-platform redirect service for getting users back to their apps.
@@ -57,7 +58,7 @@ class RedirectService implements RedirectServiceContract
      */
     public function redirect(string $path = '', array $queryParams = []): RedirectResponse|Response
     {
-        if (Platform::isPlatform('web')) {
+        if (Platform::isPlatform(PlatformType::WEB->value)) {
             return redirect()->away($this->buildWebUrl($path, $queryParams));
         }
 
@@ -77,6 +78,7 @@ class RedirectService implements RedirectServiceContract
     public function redirectWithMessage(string $path, string $message, array $extraParams = []): RedirectResponse|Response
     {
         $queryParams = array_merge(['message' => $message], $extraParams);
+
         return $this->redirect($path, $queryParams);
     }
 
@@ -116,7 +118,7 @@ class RedirectService implements RedirectServiceContract
      */
     public function getUrl(string $path = '', array $queryParams = []): string
     {
-        if (Platform::isPlatform('web')) {
+        if (Platform::isPlatform(PlatformType::WEB->value)) {
             return $this->buildWebUrl($path, $queryParams);
         }
 

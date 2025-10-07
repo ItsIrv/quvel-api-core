@@ -81,4 +81,28 @@ enum PlatformType: string
     {
         return in_array($this->value, self::getAndroidPlatforms(), true);
     }
+
+    /**
+     * Get the main platform mode for this platform type.
+     * Maps all specific platforms to one of the 3 main modes: web, mobile, desktop.
+     */
+    public function getMainMode(): string
+    {
+        return match ($this) {
+            self::MOBILE,
+            self::ANDROID,
+            self::IOS,
+            self::CAPACITOR,
+            self::CORDOVA => self::MOBILE->value,
+
+            self::DESKTOP,
+            self::MACOS,
+            self::WINDOWS,
+            self::LINUX,
+            self::ELECTRON,
+            self::TAURI => self::DESKTOP->value,
+
+            self::WEB => self::WEB->value,
+        };
+    }
 }
