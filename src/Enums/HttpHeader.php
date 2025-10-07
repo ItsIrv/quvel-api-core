@@ -26,19 +26,19 @@ enum HttpHeader: string
     case PLATFORM = 'X-Platform';
 
     /**
-     * Custom header for server-side rendering API key.
+     * Custom header for the server-side rendering API key.
      * Used for internal request authentication.
      */
     case SSR_KEY = 'X-SSR-Key';
 
     /**
      * Custom header for device identification.
-     * Used to identify specific device for targeted notifications.
+     * Used to identify a specific device for targeted notifications.
      */
     case DEVICE_ID = 'X-Device-ID';
 
     /**
-     * Custom header for push notification token.
+     * Custom header for the push notification token.
      * Used to register and update device push tokens.
      */
     case PUSH_TOKEN = 'X-Push-Token';
@@ -54,11 +54,11 @@ enum HttpHeader: string
             self::SSR_KEY => 'quvel.headers.ssr_key',
             self::DEVICE_ID => 'quvel.headers.device_id',
             self::PUSH_TOKEN => 'quvel.headers.push_token',
-            default => null,
+            self::ACCEPT_LANGUAGE => 'quvel.headers.accept_language',
         };
 
-        if ($configKey && function_exists('config')) {
-            $configValue = config($configKey);
+        if ($configKey) {
+            $configValue = config($configKey, $this->value);
 
             return $configValue ?? $this->value;
         }

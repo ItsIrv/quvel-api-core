@@ -26,14 +26,14 @@ class Detector implements PlatformDetector
     public function getPlatform(): string
     {
         $platform = PlatformType::tryFrom(
-            $this->request->header(HttpHeader::PLATFORM->getValue())
+            $this->request->header(HttpHeader::PLATFORM->getValue(), '')
         );
 
         return $platform?->getMainMode() ?? PlatformType::WEB->value;
     }
 
     /**
-     * Check if current request is from a specific platform.
+     * Check if the current request is from a specific platform.
      *
      * @param string $platform Platform to check ('web', 'mobile', 'desktop')
      * @return bool True if current platform matches
@@ -46,7 +46,7 @@ class Detector implements PlatformDetector
     /**
      * Check if the current platform supports app redirects.
      *
-     * @return bool True if platform supports app redirects
+     * @return bool True if the platform supports app redirects
      */
     public function supportsAppRedirects(): bool
     {

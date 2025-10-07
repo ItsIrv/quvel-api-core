@@ -59,6 +59,11 @@ return [
          * Set to null to use the default 'X-Push-Token'
          */
         'push_token' => env('HEADER_PUSH_TOKEN'),
+
+        /**
+         * Custom header for Accept-Language.
+         */
+        'accept_language' => env('HEADER_ACCEPT_LANGUAGE'),
     ],
 
     /**
