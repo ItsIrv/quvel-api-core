@@ -43,7 +43,7 @@ return [
         'platform' => env('HEADER_PLATFORM'),
 
         /**
-         * Custom header for SSR API key.
+         * Custom header for an SSR API key.
          * Set to null to use the default 'X-SSR-Key'
          */
         'ssr_key' => env('HEADER_SSR_KEY'),
@@ -55,7 +55,7 @@ return [
         'device_id' => env('HEADER_DEVICE_ID'),
 
         /**
-         * Custom header for push notification token.
+         * Custom header for the push notification token.
          * Set to null to use the default 'X-Push-Token'
          */
         'push_token' => env('HEADER_PUSH_TOKEN'),
@@ -242,7 +242,7 @@ return [
         'allow_anonymous' => env('DEVICES_ALLOW_ANONYMOUS', false),
 
         /**
-         * Cleanup inactive devices after this many days
+         * Clean up inactive devices after this many days
          */
         'cleanup_inactive_after_days' => env('DEVICES_CLEANUP_DAYS', 90),
 
@@ -257,7 +257,7 @@ return [
      */
     'push' => [
         /**
-         * Enable push notification system
+         * Enable the push notification system
          */
         'enabled' => env('PUSH_ENABLED', true),
 
@@ -310,6 +310,22 @@ return [
          * - 'all_user_devices': Notify all devices for the user
          */
         'default_scope' => env('TARGETING_DEFAULT_SCOPE', 'requesting_device'),
+    ],
+
+    /**
+     * API Routes Configuration
+     */
+    'routes' => [
+        /**
+         * Device management routes
+         * Publish routes file to customize: php artisan vendor:publish --tag=quvel-routes
+         */
+        'devices' => [
+            'enabled' => env('QUVEL_DEVICE_ROUTES_ENABLED', false),
+            'prefix' => 'api/devices',
+            'name' => 'devices.',
+            'middleware' => ['api', 'auth:sanctum'],
+        ],
     ],
 
     /**

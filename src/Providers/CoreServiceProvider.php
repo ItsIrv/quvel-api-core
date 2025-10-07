@@ -28,6 +28,7 @@ use Quvel\Core\Targeting\DeviceTargetingService;
 use Quvel\Core\Redirect\RedirectService;
 use Quvel\Core\Tracing\TraceManager;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Route;
 
 /**
  * Core package service provider.
@@ -98,14 +99,31 @@ class CoreServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../../database/migrations' => database_path('migrations'),
             ], 'quvel-migrations');
+
+            $this->publishes([
+                __DIR__ . '/../../routes/devices.php' => base_path('routes/devices.php'),
+            ], 'quvel-routes');
         }
 
         $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'quvel');
         $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'quvel');
 
-
         $this->registerMiddleware();
+        $this->registerRoutes();
         $this->registerDatabaseMacros();
+    }
+
+    /**
+     * Register device management routes if enabled.
+     */
+    protected function registerRoutes(): void
+    {
+        if (config('quvel.routes.devices.enabled', false)) {
+            Route::middleware(config('quvel.routes.devices.middleware', []))
+                ->prefix(config('quvel.routes.devices.prefix', 'api/devices'))
+                ->name(config('quvel.routes.devices.name', 'devices.'))
+                ->group(__DIR__ . '/../../routes/devices.php');
+        }
     }
 
     /**
