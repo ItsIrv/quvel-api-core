@@ -1,29 +1,6 @@
 # Quvel Core
 
-A Laravel package for the Core functionality of Quvel applications, providing essential web application functionality including captcha verification, request security, logging enhancements, and platform-aware services.
-
-## Features
-
-### 🛡️ Security & Captcha
-- **reCAPTCHA v3 Integration** - Complete reCAPTCHA v3 implementation with score-based validation
-- **Internal Request Validation** - Secure API endpoints with IP and API key validation
-- **Configurable Security** - Flexible security settings for different environments
-
-### 🌐 Request Handling
-- **Platform Detection** - Automatically detect web, mobile (Capacitor), and desktop (Electron/Tauri) platforms
-- **Locale Middleware** - Automatic locale detection from Accept-Language headers
-- **Smart Redirects** - Platform-aware redirects with deep linking support for mobile/desktop apps
-
-### 📊 Logging & Tracing
-- **Contextual Logging** - Enhanced logging with automatic context enrichment
-- **PII Sanitization** - Built-in sanitization for sensitive data in logs
-- **Distributed Tracing** - UUID-based request tracing across services
-- **Configurable Enrichment** - Customizable log context via closures
-
-### 🔧 Developer Tools
-- **Debug Proxy Info** - Debug endpoint for troubleshooting proxy and request issues
-- **Translation Support** - Full i18n support for all user-facing messages
-- **Exception Traits** - Consistent error response formatting
+A Laravel package providing essential utilities for full-stack applications including device management, push notifications, platform detection, locale handling, distributed tracing, and more.
 
 ## Installation
 
@@ -31,220 +8,718 @@ A Laravel package for the Core functionality of Quvel applications, providing es
 composer require quvel/core
 ```
 
-The package uses the Laravel auto-discovery, so no manual registration is required.
-
-### Publish Configuration
-
+Publish configuration:
 ```bash
-# Publish config file
-php artisan vendor:publish --tag=quvel-core-config
-
-# Publish translations (optional)
-php artisan vendor:publish --tag=quvel-core-lang
+php artisan vendor:publish --tag=quvel-config
 ```
 
-## Configuration
-
-Copy the example environment variables to your `.env` file:
-
+Publish migrations:
 ```bash
-cp vendor/quvel/core/.env.example .env.core.example
+php artisan vendor:publish --tag=quvel-migrations
+php artisan migrate
 ```
 
-### Required Configuration
+## Table of Contents
 
-**reCAPTCHA v3 Setup:**
-```env
-RECAPTCHA_SITE_KEY=your_site_key_here
-RECAPTCHA_SECRET_KEY=your_secret_key_here
-```
+- [Actions](#actions)
+- [Captcha](#captcha)
+- [Device Management](#device-management)
+- [Push Notifications](#push-notifications)
+- [Platform Detection](#platform-detection)
+- [Locale Management](#locale-management)
+- [Logging](#logging)
+- [Tracing](#tracing)
+- [Public IDs](#public-ids)
+- [Redirects](#redirects)
+- [Configuration](#configuration)
 
-**Security (for internal API requests):**
-```env
-SECURITY_API_KEY=your_internal_api_key_here
-```
+---
 
-**Frontend Integration:**
-```env
-FRONTEND_URL=http://localhost:3000
-```
+## Actions
 
-See [.env.example](.env.example) for all available configuration options.
+Actions are single-purpose classes that encapsulate business logic. They're framework-agnostic and can be used in controllers, jobs, commands, or anywhere else.
 
-## Usage
+### Device Actions
 
-### Middleware
-
-The package provides several middleware with the `quvel.` prefix:
-
+**Register a device:**
 ```php
-Route::middleware(['quvel.captcha:g-recaptcha-response'])->group(function () {
-    Route::post('/contact', [ContactController::class, 'store']);
-});
+use Quvel\Core\Actions\RegisterDeviceAction;
 
-Route::middleware(['quvel.internal-only'])->group(function () {
-    Route::get('/admin/stats', [AdminController::class, 'stats']);
-});
-
-Route::middleware(['quvel.locale'])->group(function () {
-    // Routes with automatic locale detection
-});
-
-Route::middleware(['quvel.trace'])->group(function () {
-    // Routes with distributed tracing
-});
-
-Route::middleware(['quvel.config-gate:feature.enabled,true'])->group(function () {
-    // Feature-gated routes
-});
+app(RegisterDeviceAction::class)->execute([
+    'device_id' => 'unique-device-id',
+    'platform' => 'ios',
+    'device_name' => 'John's iPhone',
+    'push_token' => 'fcm-token-here',
+    'push_provider' => 'fcm',
+]);
 ```
 
-### Services
-
-**Captcha Verification:**
+**Update push token:**
 ```php
-use Quvel\Core\Services\CaptchaService;
+use Quvel\Core\Actions\UpdatePushTokenAction;
 
-public function verify(Request $request, CaptchaService $captcha)
+app(UpdatePushTokenAction::class)->execute(
+    deviceId: 'device-123',
+    pushToken: 'new-token',
+    provider: 'fcm'
+);
+```
+
+**Deactivate a device:**
+```php
+use Quvel\Core\Actions\DeactivateDeviceAction;
+
+app(DeactivateDeviceAction::class)->execute(
+    deviceId: 'device-123',
+    reason: 'User logged out'
+);
+```
+
+**Get user's devices:**
+```php
+use Quvel\Core\Actions\GetUserDevicesAction;
+
+$devices = app(GetUserDevicesAction::class)->execute(auth()->id());
+```
+
+### Push Notification Actions
+
+**Send push notification:**
+```php
+use Quvel\Core\Actions\SendPushNotificationAction;
+
+$result = app(SendPushNotificationAction::class)->execute(
+    title: 'New Message',
+    body: 'You have a new message',
+    data: ['message_id' => 123],
+    userId: auth()->id(),
+    scope: 'all_user_devices' // or 'requesting_device'
+);
+```
+
+**Use in jobs:**
+```php
+class SendWelcomeNotification implements ShouldQueue
 {
-    $result = $captcha->verify(
-        token: $request->input('g-recaptcha-response'),
-        ip: $request->ip()
-    );
+    public function __construct(
+        private readonly SendPushNotificationAction $sendPush
+    ) {}
 
-    if ($result->isFailed()) {
-        return back()->withErrors(['captcha' => 'Captcha verification failed']);
-    }
-
-    // Check score for reCAPTCHA v3
-    if ($result->hasScore() && !$result->meetsScoreThreshold(0.7)) {
-        return back()->withErrors(['captcha' => 'Suspicious activity detected']);
+    public function handle(): void
+    {
+        $this->sendPush->execute(
+            title: 'Welcome!',
+            body: 'Thanks for signing up',
+            userId: $this->userId
+        );
     }
 }
 ```
 
-**Platform-Aware Redirects:**
+---
+
+## Captcha
+
+Protect your endpoints from bots and automated attacks using Google reCAPTCHA.
+
+### Configuration
+
 ```php
-use Quvel\Core\Services\RedirectService;
+// config/quvel.php
+'captcha' => [
+    'enabled' => env('CAPTCHA_ENABLED', true),
+    'driver' => env('CAPTCHA_DRIVER', \Quvel\Core\Captcha\GoogleRecaptchaDriver::class),
+    'score_threshold' => env('RECAPTCHA_SCORE_THRESHOLD', 0.5), // reCAPTCHA v3
+    'timeout' => env('CAPTCHA_TIMEOUT', 30),
+],
+```
 
-public function success(RedirectService $redirect)
-{
-    // Automatically handles web/mobile/desktop platforms
-    return $redirect->redirectWithMessage('/dashboard', 'Login successful!');
+```env
+CAPTCHA_ENABLED=true
+RECAPTCHA_SECRET_KEY=your-secret-key
+RECAPTCHA_SITE_KEY=your-site-key
+```
 
-    // Check platform
-    if ($redirect->isPlatform('mobile')) {
-        // Mobile-specific logic
-    }
+### Basic Usage
+
+**Verify captcha programmatically:**
+```php
+use Quvel\Core\Facades\Captcha;
+
+$result = Captcha::verify($token, $request->ip());
+
+if ($result->isSuccessful()) {
+    // Continue with request
 }
 ```
 
-**Enhanced Logging:**
+**Protect routes with middleware:**
 ```php
-use Quvel\Core\Logs\ContextualLogger;
-use Quvel\Core\Logs\SanitizedContext;
+Route::post('/register', function () {
+    // Protected by captcha
+})->middleware('captcha'); // Uses default field 'captcha_token'
 
-$logger = new ContextualLogger(app('log'), 'audit');
-
-// Log with automatic PII sanitization
-$logger->info('User registered', SanitizedContext::forPii([
-    'email' => 'user@example.com',     // Will become '@example.com'
-    'password' => 'secret123',         // Will become '[REMOVED]'
-    'phone' => '+1234567890',          // Will become '+1****7890'
-]));
+// Custom input field
+Route::post('/login', function () {
+    // ...
+})->middleware('captcha:recaptcha_response');
 ```
 
-### Custom Implementations
-
-**Custom Captcha Provider:**
+**Check reCAPTCHA v3 score:**
 ```php
-use Quvel\Core\Concerns\Security\CaptchaVerifierInterface;
+$result = Captcha::verify($token);
 
-class CustomCaptchaVerifier implements CaptchaVerifierInterface
+if ($result->hasScore() && $result->score >= 0.5) {
+    // High confidence user
+}
+```
+
+### Custom Captcha Driver
+
+Implement your own captcha provider:
+
+```php
+use Quvel\Core\Contracts\CaptchaDriverInterface;
+use Quvel\Core\Captcha\CaptchaVerificationResult;
+
+class HCaptchaDriver implements CaptchaDriverInterface
 {
     public function verify(string $token, ?string $ip = null, ?string $action = null): CaptchaVerificationResult
     {
-        // Your implementation
+        // Your verification logic
+        return CaptchaVerificationResult::success();
     }
 
-    // Implement other required methods...
-}
+    public function supportsScoring(): bool
+    {
+        return false;
+    }
 
-// In a service provider
-$this->app->bind(CaptchaVerifierInterface::class, CustomCaptchaVerifier::class);
+    public function getDefaultScoreThreshold(): ?float
+    {
+        return null;
+    }
+}
 ```
 
-**Custom Log Context Enrichment:**
+Set in config:
 ```php
-use Quvel\Core\Logs\ContextualLogger;
+'captcha' => [
+    'driver' => \App\Captcha\HCaptchaDriver::class,
+],
+```
 
-ContextualLogger::setContextEnricher(function ($context, $prefix) {
-    // Add custom context data
-    $context['app_version'] = config('app.version');
-    $context['tenant_id'] = auth()->user()?->tenant_id;
+### Events
 
-    return $context;
+Listen for captcha events:
+
+```php
+use Quvel\Core\Events\CaptchaVerifySuccess;
+use Quvel\Core\Events\CaptchaVerifyFailed;
+
+Event::listen(CaptchaVerifyFailed::class, function ($event) {
+    Log::warning('Captcha failed', [
+        'ip' => $event->ipAddress,
+        'reason' => $event->reason,
+    ]);
 });
 ```
 
-## Middleware Reference
+---
 
-| Middleware               | Alias                 | Purpose                              |
-|--------------------------|-----------------------|--------------------------------------|
-| `ConfigGate`             | `quvel.config-gate`   | Feature gates based on config values |
-| `LocaleMiddleware`       | `quvel.locale`        | Automatic locale detection           |
-| `TraceMiddleware`        | `quvel.trace`         | Distributed tracing                  |
-| `VerifyCaptcha`          | `quvel.captcha`       | reCAPTCHA v3 verification            |
-| `RequireInternalRequest` | `quvel.internal-only` | Internal API protection              |
 
-## Error Codes
+## Device Management
 
-The package uses constants for all error codes to ensure consistency:
+Track user devices across web, mobile, and desktop platforms. Register devices, manage push tokens, and maintain device lifecycle.
+
+### Configuration
 
 ```php
-use Quvel\Core\Concerns\Security\CaptchaVerificationResult;
-
-// Available error constants:
-CaptchaVerificationResult::ERROR_MISSING_SECRET
-CaptchaVerificationResult::ERROR_INVALID_RESPONSE
-CaptchaVerificationResult::ERROR_NETWORK_ERROR
+// config/quvel.php
+'devices' => [
+    'enabled' => env('DEVICES_ENABLED', true),
+    'allow_anonymous' => env('DEVICES_ALLOW_ANONYMOUS', false),
+    'cleanup_inactive_after_days' => env('DEVICES_CLEANUP_DAYS', 90),
+    'max_devices_per_user' => env('DEVICES_MAX_PER_USER', 10),
+],
 ```
 
-## Debug Tools
+### Basic Usage
 
-When `APP_DEBUG=true`, you can use the debug action to troubleshoot proxy and request issues:
+**Using Actions (recommended):**
+```php
+use Quvel\Core\Actions\RegisterDeviceAction;
+
+$device = app(RegisterDeviceAction::class)->execute([
+    'device_id' => 'unique-device-id',
+    'platform' => 'ios',
+    'device_name' => 'John's iPhone',
+    'push_token' => 'fcm-token',
+    'push_provider' => 'fcm',
+]);
+```
+
+**Using Facade:**
+```php
+use Quvel\Core\Facades\DeviceManager;
+
+$device = DeviceManager::registerDevice([
+    'device_id' => 'device-123',
+    'platform' => 'android',
+]);
+
+// Update push token
+DeviceManager::updatePushToken('device-123', 'new-token', 'fcm');
+
+// Deactivate device
+DeviceManager::deactivateDevice('device-123', 'User logged out');
+
+// Get user's devices
+$devices = DeviceManager::getUserDevices(auth()->id());
+```
+
+### Device Model
+
+Query devices directly:
 
 ```php
-use Quvel\Core\Http\Actions\DebugProxyInfoAction;
+use Quvel\Core\Models\UserDevice;
 
-Route::get('/debug/proxy', DebugProxyInfoAction::class);
+// Get active devices for a user
+$devices = UserDevice::forUser($userId)->active()->get();
+
+// Find by device ID
+$device = UserDevice::where('device_id', 'device-123')->first();
+
+// Check if device has valid push token
+if ($device->hasValidPushToken()) {
+    // Send notification
+}
+
+// Platform filtering
+$iosDevices = UserDevice::forPlatform('ios')->get();
 ```
 
-## Translation
+### API Routes
 
-All user-facing messages support translation. Publish the language files to customize:
+Publish and enable device routes:
 
 ```bash
-php artisan vendor:publish --tag=quvel-core-lang
+php artisan vendor:publish --tag=quvel-routes
 ```
 
-Messages are namespaced under `quvel-core::messages.*`.
+```php
+// config/quvel.php
+'routes' => [
+    'devices' => [
+        'enabled' => env('QUVEL_DEVICE_ROUTES_ENABLED', false),
+        'prefix' => 'api/devices',
+        'name' => 'devices.',
+        'middleware' => ['api', 'auth:sanctum'],
+    ],
+],
+```
 
-## Requirements
+Available endpoints:
+- `POST /api/devices/register` - Register a device
+- `POST /api/devices/push-token` - Update push token
+- `POST /api/devices/deactivate` - Deactivate device
+- `GET /api/devices/list` - List user's devices
 
-- PHP 8.1+
-- Laravel 10.0+
+### Middleware
 
-## Security
+Automatically detect and track devices:
 
-This package follows security best practices:
+```php
+// Applied globally via config
+'middleware' => [
+    'groups' => [
+        'api' => [
+            'device-detection',
+        ],
+    ],
+],
+```
 
-- All user input is validated and sanitized
-- Secret keys are never logged or exposed
-- Configurable IP restrictions for internal endpoints
-- PII sanitization in logs
-- Secure HTTP client configuration with timeouts
+Access device in request:
 
-## License
+```php
+$device = $request->attributes->get('device');
+$deviceId = $request->attributes->get('device_id');
+```
 
-MIT License.
+### Events
+
+Listen for device events:
+
+```php
+use Quvel\Core\Events\DeviceRegistered;
+use Quvel\Core\Events\DeviceRemoved;
+
+Event::listen(DeviceRegistered::class, function ($event) {
+    Log::info('Device registered', [
+        'device_id' => $event->deviceId,
+        'platform' => $event->platform,
+    ]);
+});
+```
+
+### Cleanup Inactive Devices
+
+Schedule device cleanup:
+
+```php
+// app/Console/Kernel.php
+protected function schedule(Schedule $schedule)
+{
+    $schedule->call(function () {
+        app(\Quvel\Core\Contracts\DeviceManager::class)->cleanupInactiveDevices();
+    })->daily();
+}
+```
+
+---
+
+## Push Notifications
+
+Send push notifications to user devices across multiple platforms (FCM, APNS, Web Push). Supports device targeting and batch processing.
+
+### Configuration
+
+```php
+// config/quvel.php
+'push' => [
+    'enabled' => env('PUSH_ENABLED', true),
+    'drivers' => explode(',', env('PUSH_DRIVERS', 'fcm,apns,web')),
+    
+    'fcm' => [
+        'server_key' => env('FCM_SERVER_KEY'),
+        'project_id' => env('FCM_PROJECT_ID'),
+    ],
+    
+    'apns' => [
+        'key_path' => env('APNS_KEY_PATH'),
+        'key_id' => env('APNS_KEY_ID'),
+        'team_id' => env('APNS_TEAM_ID'),
+        'bundle_id' => env('APNS_BUNDLE_ID'),
+        'environment' => env('APNS_ENVIRONMENT', 'sandbox'),
+    ],
+    
+    'web_push' => [
+        'vapid_subject' => env('VAPID_SUBJECT'),
+        'vapid_public_key' => env('VAPID_PUBLIC_KEY'),
+        'vapid_private_key' => env('VAPID_PRIVATE_KEY'),
+    ],
+    
+    'batch_size' => env('PUSH_BATCH_SIZE', 1000),
+],
+
+'targeting' => [
+    'default_scope' => env('TARGETING_DEFAULT_SCOPE', 'requesting_device'),
+],
+```
+
+### Basic Usage
+
+**Send to single device:**
+```php
+use Quvel\Core\Facades\PushNotification;
+
+$success = PushNotification::sendToDevice(
+    device: $device,
+    title: 'New Message',
+    body: 'You have a new message',
+    data: ['message_id' => 123]
+);
+```
+
+**Send to multiple devices:**
+```php
+$results = PushNotification::sendToDevices(
+    devices: $devices,
+    title: 'Update Available',
+    body: 'A new version is available'
+);
+
+// Returns: ['device-123' => true, 'device-456' => false, ...]
+```
+
+**Using SendPushNotificationAction (recommended):**
+```php
+use Quvel\Core\Actions\SendPushNotificationAction;
+
+$result = app(SendPushNotificationAction::class)->execute(
+    title: 'Welcome!',
+    body: 'Thanks for signing up',
+    userId: auth()->id(),
+    scope: 'all_user_devices'
+);
+
+// Returns:
+// [
+//     'success' => true,
+//     'sent_count' => 3,
+//     'total_count' => 3,
+//     'results' => [...]
+// ]
+```
+
+### Device Targeting
+
+**Targeting scopes:**
+```php
+// Send only to the requesting device
+$result = $sendPush->execute(
+    title: 'Your order is ready',
+    body: 'Pick up at counter 5',
+    requestingDevice: $device,
+    scope: 'requesting_device'
+);
+
+// Send to all user's devices
+$result = $sendPush->execute(
+    title: 'New login detected',
+    body: 'Someone logged in from Chrome',
+    userId: auth()->id(),
+    scope: 'all_user_devices'
+);
+```
+
+**Custom targeting:**
+
+Extend the DeviceTargetingService for custom filtering:
+
+```php
+namespace App\Services;
+
+use Quvel\Core\Targeting\DeviceTargetingService as BaseService;
+use Illuminate\Support\Collection;
+
+class CustomDeviceTargeting extends BaseService
+{
+    public function getTargetDevices($requestingDevice, $userId, $scope = null): Collection
+    {
+        $devices = parent::getTargetDevices($requestingDevice, $userId, $scope);
+        
+        // Add your custom filtering logic
+        return $devices->filter(function ($device) {
+            return $device->notification_preferences['enabled'] ?? true;
+        });
+    }
+}
+```
+
+Bind in service provider:
+
+```php
+$this->app->bind(
+    \Quvel\Core\Contracts\DeviceTargetingService::class,
+    \App\Services\CustomDeviceTargeting::class
+);
+```
+
+### Push Drivers
+
+**Firebase Cloud Messaging (FCM):**
+
+Supports Android, iOS, and Web platforms.
+
+```env
+FCM_SERVER_KEY=your-server-key
+FCM_PROJECT_ID=your-project-id
+```
+
+**Apple Push Notification Service (APNS):**
+
+Supports iOS and macOS.
+
+```env
+APNS_KEY_PATH=/path/to/AuthKey_XXXXXXXXXX.p8
+APNS_KEY_ID=XXXXXXXXXX
+APNS_TEAM_ID=XXXXXXXXXX
+APNS_BUNDLE_ID=com.yourapp.bundle
+APNS_ENVIRONMENT=production
+```
+
+**Web Push:**
+
+Supports web and desktop browsers.
+
+```env
+VAPID_SUBJECT=mailto:your-email@example.com
+VAPID_PUBLIC_KEY=your-public-key
+VAPID_PRIVATE_KEY=your-private-key
+```
+
+### Custom Push Driver
+
+Create a custom driver:
+
+```php
+use Quvel\Core\Contracts\PushDriver;
+use Quvel\Core\Models\UserDevice;
+
+class CustomPushDriver implements PushDriver
+{
+    public function getName(): string
+    {
+        return 'custom';
+    }
+
+    public function supports(string $platform): bool
+    {
+        return $platform === 'my-platform';
+    }
+
+    public function isConfigured(): bool
+    {
+        return !empty(config('services.custom_push.api_key'));
+    }
+
+    public function send(UserDevice $device, string $title, string $body, array $data = []): bool
+    {
+        // Your sending logic
+        return true;
+    }
+}
+```
+
+Register in service provider:
+
+```php
+app(PushManager::class)->extend('custom', function () {
+    return new CustomPushDriver();
+});
+```
+
+### Events
+
+Listen for push notification events:
+
+```php
+use Quvel\Core\Events\PushNotificationSent;
+use Quvel\Core\Events\PushNotificationFailed;
+
+Event::listen(PushNotificationSent::class, function ($event) {
+    Log::info('Push sent', [
+        'devices' => $event->deviceIds,
+        'title' => $event->title,
+    ]);
+});
+
+Event::listen(PushNotificationFailed::class, function ($event) {
+    Log::error('Push failed', [
+        'devices' => $event->deviceIds,
+        'error' => $event->error,
+    ]);
+});
+```
+
+### Batch Processing
+
+Large device lists are automatically batched:
+
+```php
+// Automatically processes in batches of 1000 (configurable)
+$results = PushNotification::sendToDevices($thousands OfDevices, $title, $body);
+```
+
+Configure batch size:
+
+```php
+'push' => [
+    'batch_size' => 500, // Process 500 devices at a time
+],
+```
+
+---
+
+## Platform Detection
+
+Detect the platform (web, mobile, desktop) from which requests originate. Supports automatic detection from headers and provides platform-specific logic.
+
+### Configuration
+
+```php
+// config/quvel.php
+'headers' => [
+    'platform' => env('HEADER_PLATFORM'), // Defaults to 'X-Platform'
+],
+```
+
+### Usage
+
+**Detect platform:**
+```php
+use Quvel\Core\Facades\Platform;
+
+$platform = Platform::getPlatform(); // 'web', 'mobile', or 'desktop'
+
+if (Platform::isPlatform('mobile')) {
+    // Mobile-specific logic
+}
+
+if (Platform::supportsAppRedirects()) {
+    // Platform supports deep links (mobile or desktop)
+}
+```
+
+**Platform enum:**
+```php
+use Quvel\Core\Platform\PlatformType;
+
+// Specific platform types
+PlatformType::IOS->value;        // 'ios'
+PlatformType::ANDROID->value;    // 'android'
+PlatformType::ELECTRON->value;   // 'electron'
+
+// Get main mode
+$platform = PlatformType::tryFrom('ios');
+$mode = $platform->getMainMode(); // 'mobile'
+
+// Helper methods
+$platform->isMobile();   // true for mobile platforms
+$platform->isDesktop();  // true for desktop platforms
+$platform->isApple();    // true for iOS/macOS
+```
+
+**Available platforms:**
+- Web: `web`
+- Mobile: `mobile`, `android`, `ios`, `capacitor`, `cordova`
+- Desktop: `desktop`, `macos`, `windows`, `linux`, `electron`, `tauri`
+
+### Middleware
+
+Auto-detect platform on every request:
+
+```php
+// Applied globally via config
+'middleware' => [
+    'groups' => [
+        'web' => ['platform-detection'],
+        'api' => ['platform-detection'],
+    ],
+],
+```
+
+### Frontend Integration
+
+Send platform from your frontend:
+
+```js
+// Capacitor
+fetch('/api/endpoint', {
+    headers: {
+        'X-Platform': 'capacitor'
+    }
+});
+
+// Electron
+fetch('/api/endpoint', {
+    headers: {
+        'X-Platform': 'electron'
+    }
+});
+```
+
+---
