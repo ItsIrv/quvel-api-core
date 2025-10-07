@@ -8,17 +8,23 @@ use Illuminate\Contracts\Http\Kernel;
 use Quvel\Core\Captcha\CaptchaManager;
 use Quvel\Core\Database\BlueprintMacros;
 use Quvel\Core\Contracts\CaptchaManager as CaptchaManagerContract;
+use Quvel\Core\Contracts\DeviceManager as DeviceManagerContract;
 use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorContract;
 use Quvel\Core\Contracts\LocaleManager as LocaleManagerContract;
 use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;
 use Quvel\Core\Contracts\PublicIdGenerator as PublicIdGeneratorContract;
+use Quvel\Core\Contracts\PushManager as PushManagerContract;
 use Quvel\Core\Contracts\RedirectService as RedirectServiceContract;
 use Quvel\Core\Contracts\TraceManager as TraceManagerContract;
+use Quvel\Core\Contracts\DeviceTargetingService as DeviceTargetingServiceContract;
+use Quvel\Core\Device\DeviceManager;
+use Quvel\Core\Push\PushManager;
 use Quvel\Core\Locale\LocaleManager;
 use Quvel\Core\Logs\ContextualLogger;
 use Quvel\Core\Platform\Detector;
 use Quvel\Core\PublicId\PublicIdManager;
 use Quvel\Core\Services\InternalRequestValidator;
+use Quvel\Core\Services\DeviceTargetingService;
 use Quvel\Core\Redirect\RedirectService;
 use Quvel\Core\Tracing\TraceManager;
 use Illuminate\Support\ServiceProvider;
@@ -60,6 +66,15 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->scoped(Detector::class);
         $this->app->scoped(PlatformDetectorContract::class, Detector::class);
+
+        $this->app->singleton(DeviceManager::class);
+        $this->app->singleton(DeviceManagerContract::class, DeviceManager::class);
+
+        $this->app->singleton(PushManager::class);
+        $this->app->singleton(PushManagerContract::class, PushManager::class);
+
+        $this->app->singleton(DeviceTargetingService::class);
+        $this->app->singleton(DeviceTargetingServiceContract::class, DeviceTargetingService::class);
     }
 
     /**
@@ -79,6 +94,10 @@ class CoreServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../../resources/views' => resource_path('views/vendor/quvel'),
             ], 'quvel-views');
+
+            $this->publishes([
+                __DIR__ . '/../../database/migrations' => database_path('migrations'),
+            ], 'quvel-migrations');
         }
 
         $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'quvel');

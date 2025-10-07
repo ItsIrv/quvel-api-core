@@ -32,6 +32,18 @@ enum HttpHeader: string
     case SSR_KEY = 'X-SSR-Key';
 
     /**
+     * Custom header for device identification.
+     * Used to identify specific device for targeted notifications.
+     */
+    case DEVICE_ID = 'X-Device-ID';
+
+    /**
+     * Custom header for push notification token.
+     * Used to register and update device push tokens.
+     */
+    case PUSH_TOKEN = 'X-Push-Token';
+
+    /**
      * Get the configured header value or use the default.
      */
     public function getValue(): string
@@ -40,6 +52,8 @@ enum HttpHeader: string
             self::TRACE_ID => 'quvel.headers.trace_id',
             self::PLATFORM => 'quvel.headers.platform',
             self::SSR_KEY => 'quvel.headers.ssr_key',
+            self::DEVICE_ID => 'quvel.headers.device_id',
+            self::PUSH_TOKEN => 'quvel.headers.push_token',
             default => null,
         };
 

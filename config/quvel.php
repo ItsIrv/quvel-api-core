@@ -47,6 +47,18 @@ return [
          * Set to null to use the default 'X-SSR-Key'
          */
         'ssr_key' => env('HEADER_SSR_KEY'),
+
+        /**
+         * Custom header for device identification.
+         * Set to null to use the default 'X-Device-ID'
+         */
+        'device_id' => env('HEADER_DEVICE_ID'),
+
+        /**
+         * Custom header for push notification token.
+         * Set to null to use the default 'X-Push-Token'
+         */
+        'push_token' => env('HEADER_PUSH_TOKEN'),
     ],
 
     /**

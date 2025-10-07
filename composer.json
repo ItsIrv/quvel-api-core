@@ -19,7 +19,9 @@
         "illuminate/queue": "^10.0|^11.0|^12.0",
         "monolog/monolog": "^3.0",
         "psr/log": "^3.0",
-        "illuminate/events": "^10.0|^11.0|^12.0"
+        "illuminate/events": "^10.0|^11.0|^12.0",
+        "ext-curl": "*",
+        "ext-openssl": "*"
     },
     "autoload": {
         "psr-4": {
