@@ -17,10 +17,10 @@ use Quvel\Core\Models\UserDevice;
  * @method static void updateLastSeen(string $deviceId)
  * @method static int cleanupInactiveDevices()
  */
-class DeviceManager extends Facade
+class Device extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Quvel\Core\Contracts\DeviceManager::class;
+        return \Quvel\Core\Contracts\Device::class;
     }
 }

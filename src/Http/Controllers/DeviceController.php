@@ -11,7 +11,7 @@ use Quvel\Core\Actions\RegisterDeviceAction;
 use Quvel\Core\Actions\UpdatePushTokenAction;
 use Quvel\Core\Actions\DeactivateDeviceAction;
 use Quvel\Core\Actions\GetUserDevicesAction;
-use Quvel\Core\Facades\Platform;
+use Quvel\Core\Facades\PlatformDetector;
 use Quvel\Core\Enums\HttpHeader;
 
 class DeviceController
@@ -34,7 +34,7 @@ class DeviceController
         ]);
 
         if (!isset($validated['platform'])) {
-            $validated['platform'] = Platform::getPlatform();
+            $validated['platform'] = PlatformDetector::getPlatform();
         }
 
         $validated['user_agent'] = $request->userAgent();

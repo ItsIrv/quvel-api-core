@@ -7,13 +7,13 @@ namespace Quvel\Core\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
-use Quvel\Core\Contracts\DeviceManager;
+use Quvel\Core\Contracts\Device;
 use Quvel\Core\Enums\HttpHeader;
 
 class DeviceDetectionMiddleware
 {
     public function __construct(
-        private readonly DeviceManager $deviceManager
+        private readonly Device $device
     ) {}
 
     public function handle(Request $request, Closure $next): mixed
@@ -30,9 +30,9 @@ class DeviceDetectionMiddleware
 
             $request->attributes->set('device_id', $deviceId);
 
-            $this->deviceManager->updateLastSeen($deviceId);
+            $this->device->updateLastSeen($deviceId);
 
-            $device = $this->deviceManager->findDevice($deviceId);
+            $device = $this->device->findDevice($deviceId);
             if ($device) {
                 Context::add('device', [
                     'id' => $device->device_id,

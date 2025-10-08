@@ -156,10 +156,11 @@ Track user devices across web, mobile, and desktop platforms. Register devices, 
 ### Usage
 
 **Register a device:**
-```php
-use Quvel\Core\Facades\DeviceManager;
 
-$device = DeviceManager::registerDevice([
+```php
+use Quvel\Core\Facades\Device;
+
+$device = Device::registerDevice([
     'device_id' => 'device-123',
     'platform' => 'ios',
     'device_name' => 'John's iPhone',
@@ -407,7 +408,7 @@ Detect the platform (web, mobile, desktop) from which requests originate.
 ### Usage
 
 ```php
-use Quvel\Core\Facades\Platform;
+use Quvel\Core\Facades\PlatformDetector;
 
 $platform = Platform::getPlatform(); // 'web', 'mobile', or 'desktop'
 
@@ -818,7 +819,7 @@ fetch('http://api.internal/endpoint', {
 All core services use contracts and can be extended or replaced:
 
 ```php
-use Quvel\Core\Device\DeviceManager as BaseManager;
+use Quvel\Core\Device\Device as BaseManager;
 
 class CustomDeviceManager extends BaseManager
 {
@@ -834,7 +835,7 @@ class CustomDeviceManager extends BaseManager
 
 // Bind in service provider
 $this->app->bind(
-    \Quvel\Core\Contracts\DeviceManager::class,
+    \Quvel\Core\Contracts\Device::class,
     \App\Services\CustomDeviceManager::class
 );
 ```

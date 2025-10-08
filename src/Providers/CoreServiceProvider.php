@@ -5,30 +5,30 @@ declare(strict_types=1);
 namespace Quvel\Core\Providers;
 
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
 use Quvel\Core\Captcha\CaptchaVerifier;
-use Quvel\Core\Database\BlueprintMacros;
+use Quvel\Core\Contracts\AppRedirector as AppRedirectorContract;
 use Quvel\Core\Contracts\CaptchaVerifier as CaptchaVerifierContract;
-use Quvel\Core\Contracts\DeviceManager as DeviceManagerContract;
+use Quvel\Core\Contracts\Device as DeviceContract;
+use Quvel\Core\Contracts\DeviceTargets as DeviceTargetsContract;
 use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorContract;
 use Quvel\Core\Contracts\LocaleResolver as LocaleResolverContract;
 use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;
 use Quvel\Core\Contracts\PublicIdGenerator as PublicIdGeneratorContract;
 use Quvel\Core\Contracts\PushManager as PushManagerContract;
-use Quvel\Core\Contracts\AppRedirector as AppRedirectorContract;
 use Quvel\Core\Contracts\TraceIdGenerator as TraceIdGeneratorContract;
-use Quvel\Core\Contracts\DeviceTargetingService as DeviceTargetingServiceContract;
-use Quvel\Core\Device\DeviceManager;
-use Quvel\Core\Push\PushManager;
+use Quvel\Core\Database\BlueprintMacros;
+use Quvel\Core\Device\Device;
+use Quvel\Core\Device\DeviceTargets;
 use Quvel\Core\Locale\LocaleResolver;
 use Quvel\Core\Logs\ContextualLogger;
-use Quvel\Core\Platform\Detector;
+use Quvel\Core\Platform\PlatformDetector;
 use Quvel\Core\PublicId\PublicIdManager;
-use Quvel\Core\Services\InternalRequestValidator;
-use Quvel\Core\Targeting\DeviceTargetingService;
+use Quvel\Core\Push\PushManager;
 use Quvel\Core\Redirect\AppRedirector;
+use Quvel\Core\Services\InternalRequestValidator;
 use Quvel\Core\Tracing\TraceIdGenerator;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Route;
 
 /**
  * Core package service provider.
@@ -65,17 +65,17 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(ContextualLogger::class);
 
-        $this->app->scoped(Detector::class);
-        $this->app->scoped(PlatformDetectorContract::class, Detector::class);
+        $this->app->scoped(PlatformDetector::class);
+        $this->app->scoped(PlatformDetectorContract::class, PlatformDetector::class);
 
-        $this->app->singleton(DeviceManager::class);
-        $this->app->singleton(DeviceManagerContract::class, DeviceManager::class);
+        $this->app->singleton(Device::class);
+        $this->app->singleton(DeviceContract::class, Device::class);
 
         $this->app->singleton(PushManager::class);
         $this->app->singleton(PushManagerContract::class, PushManager::class);
 
-        $this->app->singleton(DeviceTargetingService::class);
-        $this->app->singleton(DeviceTargetingServiceContract::class, DeviceTargetingService::class);
+        $this->app->singleton(DeviceTargets::class);
+        $this->app->singleton(DeviceTargetsContract::class, DeviceTargets::class);
     }
 
     /**

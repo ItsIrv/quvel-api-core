@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Quvel\Core\Actions;
 
 use Illuminate\Support\Collection;
-use Quvel\Core\Contracts\DeviceManager;
+use Quvel\Core\Contracts\Device;
 use RuntimeException;
 
 class GetUserDevicesAction
 {
     public function __construct(
-        private readonly DeviceManager $deviceManager
+        private readonly Device $device
     ) {}
 
     public function __invoke(?int $userId): Collection
@@ -20,6 +20,6 @@ class GetUserDevicesAction
             throw new RuntimeException('Authentication required');
         }
 
-        return $this->deviceManager->getUserDevices($userId);
+        return $this->device->getUserDevices($userId);
     }
 }

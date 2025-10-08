@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Actions;
 
-use Quvel\Core\Contracts\DeviceManager;
+use Quvel\Core\Contracts\Device;
 
 class UpdatePushTokenAction
 {
     public function __construct(
-        private readonly DeviceManager $deviceManager
+        private readonly Device $device
     ) {}
 
     public function __invoke(string $deviceId, string $pushToken, string $provider): bool
     {
-        return $this->deviceManager->updatePushToken($deviceId, $pushToken, $provider);
+        return $this->device->updatePushToken($deviceId, $pushToken, $provider);
     }
 }

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Device;
 
-use Quvel\Core\Contracts\DeviceManager as DeviceManagerContract;
+use Quvel\Core\Contracts\Device as DeviceContract;
 use Quvel\Core\Events\DeviceRegistered;
 use Quvel\Core\Events\DeviceRemoved;
 use Quvel\Core\Models\UserDevice;
 use Illuminate\Support\Collection;
 use RuntimeException;
 
-class DeviceManager implements DeviceManagerContract
+class Device implements DeviceContract
 {
     public function registerDevice(array $deviceData): UserDevice
     {

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Actions;
 
-use Quvel\Core\Contracts\DeviceManager;
+use Quvel\Core\Contracts\Device;
 use Quvel\Core\Models\UserDevice;
 use RuntimeException;
 
 class RegisterDeviceAction
 {
     public function __construct(
-        private readonly DeviceManager $deviceManager
+        private readonly Device $device
     ) {}
 
     public function __invoke(array $deviceData): UserDevice
@@ -24,6 +24,6 @@ class RegisterDeviceAction
             $deviceData['user_id'] = auth()->id();
         }
 
-        return $this->deviceManager->registerDevice($deviceData);
+        return $this->device->registerDevice($deviceData);
     }
 }

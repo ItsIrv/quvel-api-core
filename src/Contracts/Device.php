@@ -7,10 +7,10 @@ namespace Quvel\Core\Contracts;
 use Quvel\Core\Models\UserDevice;
 use Illuminate\Support\Collection;
 
-interface DeviceManager
+interface Device
 {
     /**
-     * Register a new device or update existing one.
+     * Register a new device or update an existing one.
      */
     public function registerDevice(array $deviceData): UserDevice;
 

@@ -7,7 +7,7 @@ namespace Quvel\Core\Contracts;
 use Illuminate\Support\Collection;
 use Quvel\Core\Models\UserDevice;
 
-interface DeviceTargetingService
+interface DeviceTargets
 {
     /**
      * Get target devices for notification based on scope.

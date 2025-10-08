@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Quvel\Core\Targeting;
+namespace Quvel\Core\Device;
 
 use Illuminate\Support\Collection;
-use Quvel\Core\Contracts\DeviceManager;
-use Quvel\Core\Contracts\DeviceTargetingService as DeviceTargetingServiceContract;
+use Quvel\Core\Contracts\Device;
+use Quvel\Core\Contracts\DeviceTargets as DeviceTargetingServiceContract;
 use Quvel\Core\Models\UserDevice;
 use RuntimeException;
 
-class DeviceTargetingService implements DeviceTargetingServiceContract
+class DeviceTargets implements DeviceTargetingServiceContract
 {
     public function __construct(
-        private readonly DeviceManager $deviceManager
+        private readonly Device $device
     ) {}
 
     public function getTargetDevices(
@@ -50,7 +50,7 @@ class DeviceTargetingService implements DeviceTargetingServiceContract
             return $this->getRequestingDevice($requestingDevice);
         }
 
-        return $this->deviceManager->getUserDevices($userId)->filter(function (UserDevice $device) {
+        return $this->device->getUserDevices($userId)->filter(function (UserDevice $device) {
             return $device->hasValidPushToken();
         });
     }

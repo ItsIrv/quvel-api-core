@@ -7,7 +7,7 @@ namespace Quvel\Core\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
-use Quvel\Core\Facades\Platform;
+use Quvel\Core\Facades\PlatformDetector;
 
 /**
  * Platform detection middleware that adds platform info to request context.
@@ -19,7 +19,7 @@ class PlatformDetectionMiddleware
      */
     public function handle(Request $request, Closure $next, bool $includeUserAgent = false): mixed
     {
-        $platform = Platform::getPlatform();
+        $platform = PlatformDetector::getPlatform();
 
         Context::add('platform', $platform);
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Quvel\Core\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Quvel\Core\Contracts\PlatformDetector;
 
 /**
  * Platform detection facade.
@@ -16,10 +15,10 @@ use Quvel\Core\Contracts\PlatformDetector;
  *
  * @see PlatformDetector
  */
-class Platform extends Facade
+class PlatformDetector extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return PlatformDetector::class;
+        return \Quvel\Core\Contracts\PlatformDetector::class;
     }
 }

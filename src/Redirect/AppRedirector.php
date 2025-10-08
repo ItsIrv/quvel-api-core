@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Quvel\Core\Redirect;
 
 use Quvel\Core\Contracts\AppRedirector as AppRedirectorContract;
-use Quvel\Core\Facades\Platform;
+use Quvel\Core\Facades\PlatformDetector;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Quvel\Core\Platform\PlatformType;
@@ -59,7 +59,7 @@ class AppRedirector implements AppRedirectorContract
      */
     public function redirect(string $path = '', array $queryParams = []): RedirectResponse|Response
     {
-        if (Platform::isPlatform(PlatformType::WEB->value)) {
+        if (PlatformDetector::isPlatform(PlatformType::WEB->value)) {
             return redirect()->away($this->buildWebUrl($path, $queryParams));
         }
 
@@ -119,7 +119,7 @@ class AppRedirector implements AppRedirectorContract
      */
     public function getUrl(string $path = '', array $queryParams = []): string
     {
-        if (Platform::isPlatform(PlatformType::WEB->value)) {
+        if (PlatformDetector::isPlatform(PlatformType::WEB->value)) {
             return $this->buildWebUrl($path, $queryParams);
         }
 
@@ -148,22 +148,22 @@ class AppRedirector implements AppRedirectorContract
     /**
      * Check if current request is from a specific platform.
      *
-     * @param string $platform Platform to check ('web', 'mobile', 'desktop')
+     * @param string $platform PlatformDetector to check ('web', 'mobile', 'desktop')
      * @return bool True if current platform matches
      */
     public function isPlatform(string $platform): bool
     {
-        return Platform::isPlatform($platform);
+        return PlatformDetector::isPlatform($platform);
     }
 
     /**
      * Get the detected platform type.
      *
-     * @return string Platform type ('web', 'mobile', 'desktop')
+     * @return string PlatformDetector type ('web', 'mobile', 'desktop')
      */
     public function getPlatform(): string
     {
-        return Platform::getPlatform();
+        return PlatformDetector::getPlatform();
     }
 
     /**
@@ -173,7 +173,7 @@ class AppRedirector implements AppRedirectorContract
      */
     public function supportsAppRedirects(): bool
     {
-        return Platform::supportsAppRedirects();
+        return PlatformDetector::supportsAppRedirects();
     }
 
     /**
@@ -267,7 +267,7 @@ class AppRedirector implements AppRedirectorContract
             'appUrl' => $appUrl,
             'webUrl' => $webUrl,
             'timeout' => $timeout,
-            'platform' => Platform::getPlatform(),
+            'platform' => PlatformDetector::getPlatform(),
         ]);
     }
 
