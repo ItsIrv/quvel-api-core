@@ -7,7 +7,7 @@ namespace Quvel\Core\Facades;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Facade;
-use Quvel\Core\Contracts\RedirectService;
+use Quvel\Core\Contracts\AppRedirector;
 
 /**
  * Multi-platform redirect facade.
@@ -22,12 +22,12 @@ use Quvel\Core\Contracts\RedirectService;
  * @method static bool supportsAppRedirects() Check if the current platform supports app redirects
  * @method static bool isValidRedirectUrl(string $url) Validate if a redirect URL is safe
  *
- * @see RedirectService
+ * @see AppRedirector
  */
 class Redirect extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return RedirectService::class;
+        return AppRedirector::class;
     }
 }

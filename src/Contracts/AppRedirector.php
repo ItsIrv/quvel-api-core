@@ -8,9 +8,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 
 /**
- * Contract for multi-platform redirect service.
+ * Contract for multi-platform app redirection.
  */
-interface RedirectService
+interface AppRedirector
 {
     /**
      * Smart redirect based on platform and configured redirect mode.

@@ -7,9 +7,9 @@ namespace Quvel\Core\Contracts;
 use Quvel\Core\Captcha\CaptchaVerificationResult;
 
 /**
- * Contract for captcha management.
+ * Contract for captcha verification.
  */
-interface CaptchaManager
+interface CaptchaVerifier
 {
     /**
      * Verify a captcha token.

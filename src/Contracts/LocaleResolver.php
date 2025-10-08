@@ -7,9 +7,9 @@ namespace Quvel\Core\Contracts;
 use Illuminate\Http\Request;
 
 /**
- * Contract for locale management.
+ * Contract for locale resolution.
  */
-interface LocaleManager
+interface LocaleResolver
 {
     /**
      * Detect locale from request.

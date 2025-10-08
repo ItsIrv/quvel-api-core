@@ -7,9 +7,9 @@ namespace Quvel\Core\Contracts;
 use Illuminate\Http\Request;
 
 /**
- * Contract for trace ID management.
+ * Contract for trace ID generation and validation.
  */
-interface TraceManager
+interface TraceIdGenerator
 {
     /**
      * Get trace ID from request or generate new one.

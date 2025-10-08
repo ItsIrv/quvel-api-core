@@ -6,7 +6,7 @@ namespace Quvel\Core\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Quvel\Core\Contracts\LocaleManager as LocaleManagerContract;
+use Quvel\Core\Contracts\LocaleResolver as LocaleResolverContract;
 
 /**
  * Enhanced locale middleware with configurable locale detection.
@@ -14,7 +14,7 @@ use Quvel\Core\Contracts\LocaleManager as LocaleManagerContract;
 class LocaleMiddleware
 {
     public function __construct(
-        private readonly LocaleManagerContract $localeManager
+        private readonly LocaleResolverContract $localeManager
     ) {
     }
 

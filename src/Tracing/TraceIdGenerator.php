@@ -8,14 +8,15 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Str;
-use Quvel\Core\Contracts\TraceManager as TraceManagerContract;
+use Quvel\Core\Contracts\TraceIdGenerator as TraceIdGeneratorContract;
 use Quvel\Core\Enums\HttpHeader;
 use Quvel\Core\Events\PublicTraceAccepted;
 
 /**
- * Trace manager for distributed tracing with UUID generation.
+ * Trace ID generation and validation service.
+ * Generates and validates trace IDs for distributed tracing.
  */
-class TraceManager implements TraceManagerContract
+class TraceIdGenerator implements TraceIdGeneratorContract
 {
     /**
      * Custom trace ID generator.

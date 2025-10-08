@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Http\Middleware;
 
-use Quvel\Core\Captcha\CaptchaManager;
+use Quvel\Core\Captcha\CaptchaVerifier;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 class VerifyCaptcha
 {
     public function __construct(
-        private readonly CaptchaManager $captchaManager
+        private readonly CaptchaVerifier $captchaManager
     ) {
     }
 

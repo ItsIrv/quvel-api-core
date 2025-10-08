@@ -6,7 +6,7 @@ namespace Quvel\Core\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Quvel\Core\Contracts\TraceManager as TraceManagerContract;
+use Quvel\Core\Contracts\TraceIdGenerator as TraceIdGeneratorContract;
 use Quvel\Core\Enums\HttpHeader;
 
 /**
@@ -15,7 +15,7 @@ use Quvel\Core\Enums\HttpHeader;
 class TraceMiddleware
 {
     public function __construct(
-        private readonly TraceManagerContract $traceManager
+        private readonly TraceIdGeneratorContract $traceManager
     ) {
     }
 

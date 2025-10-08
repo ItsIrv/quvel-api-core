@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Redirect;
 
-use Quvel\Core\Contracts\RedirectService as RedirectServiceContract;
+use Quvel\Core\Contracts\AppRedirector as AppRedirectorContract;
 use Quvel\Core\Facades\Platform;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Quvel\Core\Platform\PlatformType;
 
 /**
- * Multi-platform redirect service for getting users back to their apps.
+ * Multi-platform app redirection service.
+ * Handles redirecting users back to their apps across web, mobile, and desktop platforms.
  *
  * ## Redirect Modes
  *
@@ -44,7 +45,7 @@ use Quvel\Core\Platform\PlatformType;
  *
  * @see config/quvel.php for configuration options
  */
-class RedirectService implements RedirectServiceContract
+class AppRedirector implements AppRedirectorContract
 {
     /**
      * Smart redirect based on platform and configured redirect mode.

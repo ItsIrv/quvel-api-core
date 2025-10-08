@@ -6,13 +6,14 @@ namespace Quvel\Core\Locale;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use Quvel\Core\Contracts\LocaleManager as LocaleManagerContract;
+use Quvel\Core\Contracts\LocaleResolver as LocaleResolverContract;
 use Quvel\Core\Enums\HttpHeader;
 
 /**
- * Locale manager with configurable locale detection.
+ * Locale resolution service.
+ * Detects, validates, and sets application locale from requests.
  */
-class LocaleManager implements LocaleManagerContract
+class LocaleResolver implements LocaleResolverContract
 {
     public function detectLocale(Request $request): ?string
     {

@@ -6,31 +6,24 @@ namespace Quvel\Core\Captcha;
 
 use Illuminate\Http\Request;
 use Quvel\Core\Contracts\CaptchaDriverInterface;
-use Quvel\Core\Contracts\CaptchaManager as CaptchaManagerContract;
+use Quvel\Core\Contracts\CaptchaVerifier as CaptchaVerifierContract;
 use Quvel\Core\Events\CaptchaVerifyFailed;
 use Quvel\Core\Events\CaptchaVerifySuccess;
 
 /**
- * Simple captcha manager.
+ * Captcha verification service.
+ * Coordinates driver verification and event dispatching.
  */
-class CaptchaManager implements CaptchaManagerContract
+class CaptchaVerifier implements CaptchaVerifierContract
 {
     private ?CaptchaDriverInterface $driver = null;
-
-    private function getDriver(): CaptchaDriverInterface
-    {
-        if ($this->driver === null) {
-            $driverClass = config('quvel.captcha.driver', GoogleRecaptchaDriver::class);
-            $this->driver = app($driverClass);
-        }
-
-        return $this->driver;
-    }
 
     public function verify(string $token, ?string $ip = null, ?string $action = null): CaptchaVerificationResult
     {
         if (!$this->isEnabled()) {
-            return CaptchaVerificationResult::success();
+            return CaptchaVerificationResult::failure([
+                'Captcha is disabled'
+            ]);
         }
 
         $result = $this->getDriver()->verify($token, $ip, $action);
@@ -73,5 +66,15 @@ class CaptchaManager implements CaptchaManagerContract
     public function getDefaultScoreThreshold(): ?float
     {
         return $this->getDriver()->getDefaultScoreThreshold();
+    }
+
+    private function getDriver(): CaptchaDriverInterface
+    {
+        if ($this->driver === null) {
+            $driverClass = config('quvel.captcha.driver', GoogleRecaptchaDriver::class);
+            $this->driver = app($driverClass);
+        }
+
+        return $this->driver;
     }
 }

@@ -5,28 +5,28 @@ declare(strict_types=1);
 namespace Quvel\Core\Providers;
 
 use Illuminate\Contracts\Http\Kernel;
-use Quvel\Core\Captcha\CaptchaManager;
+use Quvel\Core\Captcha\CaptchaVerifier;
 use Quvel\Core\Database\BlueprintMacros;
-use Quvel\Core\Contracts\CaptchaManager as CaptchaManagerContract;
+use Quvel\Core\Contracts\CaptchaVerifier as CaptchaVerifierContract;
 use Quvel\Core\Contracts\DeviceManager as DeviceManagerContract;
 use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorContract;
-use Quvel\Core\Contracts\LocaleManager as LocaleManagerContract;
+use Quvel\Core\Contracts\LocaleResolver as LocaleResolverContract;
 use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;
 use Quvel\Core\Contracts\PublicIdGenerator as PublicIdGeneratorContract;
 use Quvel\Core\Contracts\PushManager as PushManagerContract;
-use Quvel\Core\Contracts\RedirectService as RedirectServiceContract;
-use Quvel\Core\Contracts\TraceManager as TraceManagerContract;
+use Quvel\Core\Contracts\AppRedirector as AppRedirectorContract;
+use Quvel\Core\Contracts\TraceIdGenerator as TraceIdGeneratorContract;
 use Quvel\Core\Contracts\DeviceTargetingService as DeviceTargetingServiceContract;
 use Quvel\Core\Device\DeviceManager;
 use Quvel\Core\Push\PushManager;
-use Quvel\Core\Locale\LocaleManager;
+use Quvel\Core\Locale\LocaleResolver;
 use Quvel\Core\Logs\ContextualLogger;
 use Quvel\Core\Platform\Detector;
 use Quvel\Core\PublicId\PublicIdManager;
 use Quvel\Core\Services\InternalRequestValidator;
 use Quvel\Core\Targeting\DeviceTargetingService;
-use Quvel\Core\Redirect\RedirectService;
-use Quvel\Core\Tracing\TraceManager;
+use Quvel\Core\Redirect\AppRedirector;
+use Quvel\Core\Tracing\TraceIdGenerator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -45,20 +45,20 @@ class CoreServiceProvider extends ServiceProvider
             'quvel'
         );
 
-        $this->app->singleton(CaptchaManager::class);
-        $this->app->singleton(CaptchaManagerContract::class, CaptchaManager::class);
+        $this->app->singleton(CaptchaVerifier::class);
+        $this->app->singleton(CaptchaVerifierContract::class, CaptchaVerifier::class);
 
         $this->app->singleton(InternalRequestValidator::class);
         $this->app->singleton(InternalRequestValidatorContract::class, InternalRequestValidator::class);
 
-        $this->app->singleton(LocaleManager::class);
-        $this->app->singleton(LocaleManagerContract::class, LocaleManager::class);
+        $this->app->singleton(LocaleResolver::class);
+        $this->app->singleton(LocaleResolverContract::class, LocaleResolver::class);
 
-        $this->app->singleton(TraceManager::class);
-        $this->app->singleton(TraceManagerContract::class, TraceManager::class);
+        $this->app->singleton(TraceIdGenerator::class);
+        $this->app->singleton(TraceIdGeneratorContract::class, TraceIdGenerator::class);
 
-        $this->app->singleton(RedirectService::class);
-        $this->app->singleton(RedirectServiceContract::class, RedirectService::class);
+        $this->app->singleton(AppRedirector::class);
+        $this->app->singleton(AppRedirectorContract::class, AppRedirector::class);
 
         $this->app->singleton(PublicIdManager::class);
         $this->app->singleton(PublicIdGeneratorContract::class, PublicIdManager::class);
