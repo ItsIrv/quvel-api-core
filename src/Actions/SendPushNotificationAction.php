@@ -15,7 +15,7 @@ class SendPushNotificationAction
         private readonly DeviceTargetingService $targetingService
     ) {}
 
-    public function execute(
+    public function __invoke(
         string $title,
         string $body,
         array $data = [],

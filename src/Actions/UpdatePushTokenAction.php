@@ -12,7 +12,7 @@ class UpdatePushTokenAction
         private readonly DeviceManager $deviceManager
     ) {}
 
-    public function execute(string $deviceId, string $pushToken, string $provider): bool
+    public function __invoke(string $deviceId, string $pushToken, string $provider): bool
     {
         return $this->deviceManager->updatePushToken($deviceId, $pushToken, $provider);
     }

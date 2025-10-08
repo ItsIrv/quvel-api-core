@@ -14,7 +14,7 @@ class GetUserDevicesAction
         private readonly DeviceManager $deviceManager
     ) {}
 
-    public function execute(?int $userId): Collection
+    public function __invoke(?int $userId): Collection
     {
         if (!$userId) {
             throw new RuntimeException('Authentication required');

@@ -14,7 +14,7 @@ class RegisterDeviceAction
         private readonly DeviceManager $deviceManager
     ) {}
 
-    public function execute(array $deviceData): UserDevice
+    public function __invoke(array $deviceData): UserDevice
     {
         if (!config('quvel.devices.allow_anonymous', false) && !auth()->check()) {
             throw new RuntimeException('Authentication required for device registration');

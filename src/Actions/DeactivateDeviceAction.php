@@ -12,7 +12,7 @@ class DeactivateDeviceAction
         private readonly DeviceManager $deviceManager
     ) {}
 
-    public function execute(string $deviceId, string $reason = 'Manual deactivation'): bool
+    public function __invoke(string $deviceId, string $reason = 'Manual deactivation'): bool
     {
         return $this->deviceManager->deactivateDevice($deviceId, $reason);
     }

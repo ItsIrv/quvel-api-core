@@ -40,7 +40,7 @@ class DeviceController
         $validated['user_agent'] = $request->userAgent();
 
         try {
-            $device = $registerDevice->execute($validated);
+            $device = $registerDevice($validated);
 
             return response()->json([
                 'success' => true,
@@ -76,7 +76,7 @@ class DeviceController
             ], 400);
         }
 
-        $success = $updatePushToken->execute(
+        $success = $updatePushToken(
             $deviceId,
             $validated['push_token'],
             $validated['push_provider']
@@ -103,7 +103,7 @@ class DeviceController
             ], 400);
         }
 
-        $success = $deactivateDevice->execute(
+        $success = $deactivateDevice(
             $deviceId,
             $validated['reason'] ?? 'Manual deactivation'
         );
@@ -119,7 +119,7 @@ class DeviceController
         $user = $request->user();
 
         try {
-            $devices = $getUserDevices->execute($user?->id);
+            $devices = $getUserDevices($user?->id);
 
             return response()->json([
                 'success' => true,
