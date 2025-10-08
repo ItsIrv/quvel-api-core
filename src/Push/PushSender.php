@@ -7,7 +7,7 @@ namespace Quvel\Core\Push;
 use Exception;
 use Illuminate\Support\Collection;
 use Quvel\Core\Contracts\PushDriver;
-use Quvel\Core\Contracts\PushManager as PushManagerContract;
+use Quvel\Core\Contracts\PushSender as PushManagerContract;
 use Quvel\Core\Events\PushNotificationSent;
 use Quvel\Core\Events\PushNotificationFailed;
 use Quvel\Core\Models\UserDevice;

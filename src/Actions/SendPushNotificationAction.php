@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Quvel\Core\Actions;
 
 use Quvel\Core\Contracts\DeviceTargets;
-use Quvel\Core\Contracts\PushManager;
+use Quvel\Core\Contracts\PushSender;
 use Quvel\Core\Models\UserDevice;
 
 class SendPushNotificationAction
 {
     public function __construct(
-        private readonly PushManager $pushManager,
+        private readonly PushSender $pushManager,
         private readonly DeviceTargets $targetingService
     ) {}
 

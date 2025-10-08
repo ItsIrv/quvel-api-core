@@ -7,7 +7,7 @@ namespace Quvel\Core\Contracts;
 use Quvel\Core\Models\UserDevice;
 use Illuminate\Support\Collection;
 
-interface PushManager
+interface PushSender
 {
     /**
      * Send a push notification to a specific device.

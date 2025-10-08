@@ -16,7 +16,7 @@ use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorCon
 use Quvel\Core\Contracts\LocaleResolver as LocaleResolverContract;
 use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;
 use Quvel\Core\Contracts\PublicIdGenerator as PublicIdGeneratorContract;
-use Quvel\Core\Contracts\PushManager as PushServiceContract;
+use Quvel\Core\Contracts\PushSender as PushSenderContract;
 use Quvel\Core\Contracts\TraceIdGenerator as TraceIdGeneratorContract;
 use Quvel\Core\Database\BlueprintMacros;
 use Quvel\Core\Device\Device;
@@ -74,7 +74,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(DeviceContract::class, Device::class);
 
         $this->app->singleton(PushManager::class);
-        $this->app->singleton(PushServiceContract::class, PushSender::class);
+        $this->app->singleton(PushSenderContract::class, PushSender::class);
 
         $this->app->singleton(DeviceTargets::class);
         $this->app->singleton(DeviceTargetsContract::class, DeviceTargets::class);

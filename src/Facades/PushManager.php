@@ -20,6 +20,6 @@ class PushManager extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Quvel\Core\Contracts\PushManager::class;
+        return \Quvel\Core\Contracts\PushSender::class;
     }
 }
