@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Quvel\Core\Database;
 
 use Illuminate\Database\Schema\Blueprint;
+use Quvel\Core\PublicId\PublicIdManager;
 
 /**
  * Database blueprint macros for common column patterns.
@@ -26,13 +27,8 @@ class BlueprintMacros
     {
         Blueprint::macro('publicId', function (string $column = 'public_id', bool $index = true) {
             /** @var Blueprint $this */
-            $driver = config('quvel.public_id.driver', 'ulid');
-
-            $col = match ($driver) {
-                'ulid' => $this->char($column, 26),
-                'uuid' => $this->uuid($column),
-                default => $this->char($column, 26),
-            };
+            $manager = app(PublicIdManager::class);
+            $col = $manager->driver()->schema($this, $column);
 
             $col->unique();
 

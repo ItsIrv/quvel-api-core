@@ -16,7 +16,7 @@ use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorCon
 use Quvel\Core\Contracts\LocaleResolver as LocaleResolverContract;
 use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;
 use Quvel\Core\Contracts\PublicIdGenerator as PublicIdGeneratorContract;
-use Quvel\Core\Contracts\PushManager as PushManagerContract;
+use Quvel\Core\Contracts\PushManager as PushServiceContract;
 use Quvel\Core\Contracts\TraceIdGenerator as TraceIdGeneratorContract;
 use Quvel\Core\Database\BlueprintMacros;
 use Quvel\Core\Device\Device;
@@ -24,8 +24,10 @@ use Quvel\Core\Device\DeviceTargets;
 use Quvel\Core\Locale\LocaleResolver;
 use Quvel\Core\Logs\ContextualLogger;
 use Quvel\Core\Platform\PlatformDetector;
+use Quvel\Core\PublicId\PublicIdGenerator;
 use Quvel\Core\PublicId\PublicIdManager;
 use Quvel\Core\Push\PushManager;
+use Quvel\Core\Push\PushSender;
 use Quvel\Core\Redirect\AppRedirector;
 use Quvel\Core\Services\InternalRequestValidator;
 use Quvel\Core\Tracing\TraceIdGenerator;
@@ -61,7 +63,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(AppRedirectorContract::class, AppRedirector::class);
 
         $this->app->singleton(PublicIdManager::class);
-        $this->app->singleton(PublicIdGeneratorContract::class, PublicIdManager::class);
+        $this->app->singleton(PublicIdGeneratorContract::class, PublicIdGenerator::class);
 
         $this->app->singleton(ContextualLogger::class);
 
@@ -72,7 +74,7 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(DeviceContract::class, Device::class);
 
         $this->app->singleton(PushManager::class);
-        $this->app->singleton(PushManagerContract::class, PushManager::class);
+        $this->app->singleton(PushServiceContract::class, PushSender::class);
 
         $this->app->singleton(DeviceTargets::class);
         $this->app->singleton(DeviceTargetsContract::class, DeviceTargets::class);

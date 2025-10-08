@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 interface PushManager
 {
     /**
-     * Send push notification to a specific device.
+     * Send a push notification to a specific device.
      */
     public function sendToDevice(UserDevice $device, string $title, string $body, array $data = []): bool;
 
@@ -23,11 +23,6 @@ interface PushManager
      * Get the appropriate driver for a device.
      */
     public function getDriverForDevice(UserDevice $device): ?PushDriver;
-
-    /**
-     * Get all available drivers.
-     */
-    public function getAvailableDrivers(): array;
 
     /**
      * Check if push notifications are enabled.

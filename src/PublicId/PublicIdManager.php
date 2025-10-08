@@ -4,41 +4,36 @@ declare(strict_types=1);
 
 namespace Quvel\Core\PublicId;
 
-use Quvel\Core\Contracts\PublicIdGenerator;
+use Illuminate\Support\Manager;
 use Quvel\Core\PublicId\Drivers\UlidDriver;
 use Quvel\Core\PublicId\Drivers\UuidDriver;
 
 /**
  * Public ID manager with configurable drivers.
  */
-class PublicIdManager implements PublicIdGenerator
+class PublicIdManager extends Manager
 {
-    private ?PublicIdGenerator $driver = null;
-
-    public function generate(): string
+    /**
+     * Get the default driver name.
+     */
+    public function getDefaultDriver(): string
     {
-        return $this->getDriver()->generate();
-    }
-
-    public function isValid(string $id): bool
-    {
-        return $this->getDriver()->isValid($id);
+        return $this->config->get('quvel.public_id.driver', 'ulid');
     }
 
     /**
-     * Get the configured driver instance.
+     * Create the ULID driver.
      */
-    private function getDriver(): PublicIdGenerator
+    protected function createUlidDriver(): UlidDriver
     {
-        if ($this->driver === null) {
-            $driverType = config('quvel.public_id.driver', 'ulid');
+        return $this->container->make(UlidDriver::class);
+    }
 
-            $this->driver = match ($driverType) {
-                'uuid' => app(UuidDriver::class),
-                default => app(UlidDriver::class),
-            };
-        }
-
-        return $this->driver;
+    /**
+     * Create the UUID driver.
+     */
+    protected function createUuidDriver(): UuidDriver
+    {
+        return $this->container->make(UuidDriver::class);
     }
 }

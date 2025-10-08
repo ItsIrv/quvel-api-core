@@ -17,7 +17,7 @@ interface PlatformDetector
     public function getPlatform(): string;
 
     /**
-     * Check if current request is from a specific platform.
+     * Check if the current request is from a specific platform.
      *
      * @param string $platform Platform to check ('web', 'mobile', 'desktop')
      * @return bool True if current platform matches
@@ -27,7 +27,7 @@ interface PlatformDetector
     /**
      * Check if the current platform supports app redirects.
      *
-     * @return bool True if platform supports app redirects
+     * @return bool True if a platform supports app redirects
      */
     public function supportsAppRedirects(): bool;
 }
