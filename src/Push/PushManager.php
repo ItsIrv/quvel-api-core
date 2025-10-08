@@ -23,6 +23,11 @@ class PushManager extends Manager
         return config('quvel.push.drivers', []);
     }
 
+    public function isEnabled(): bool
+    {
+        return config('quvel.push.enabled', true);
+    }
+
     /**
      * @throws BindingResolutionException
      */

@@ -23,9 +23,4 @@ interface PushSender
      * Get the appropriate driver for a device.
      */
     public function getDriverForDevice(UserDevice $device): ?PushDriver;
-
-    /**
-     * Check if push notifications are enabled.
-     */
-    public function isEnabled(): bool;
 }

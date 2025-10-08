@@ -7,12 +7,12 @@ namespace Quvel\Core\Push;
 use Exception;
 use Illuminate\Support\Collection;
 use Quvel\Core\Contracts\PushDriver;
-use Quvel\Core\Contracts\PushSender as PushManagerContract;
+use Quvel\Core\Contracts\PushSender as PushSenderContract;
 use Quvel\Core\Events\PushNotificationSent;
 use Quvel\Core\Events\PushNotificationFailed;
 use Quvel\Core\Models\UserDevice;
 
-class PushSender implements PushManagerContract
+class PushSender implements PushSenderContract
 {
     public function __construct(
         private readonly PushManager $manager
@@ -20,7 +20,7 @@ class PushSender implements PushManagerContract
 
     public function sendToDevice(UserDevice $device, string $title, string $body, array $data = []): bool
     {
-        if (!$this->isEnabled() || !$device->hasValidPushToken()) {
+        if (!$this->manager->isEnabled() || !$device->hasValidPushToken()) {
             return false;
         }
 
@@ -99,10 +99,5 @@ class PushSender implements PushManagerContract
         }
 
         return null;
-    }
-
-    public function isEnabled(): bool
-    {
-        return config('quvel.push.enabled', true);
     }
 }
