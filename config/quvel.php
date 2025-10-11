@@ -327,9 +327,20 @@ return [
          */
         'devices' => [
             'enabled' => env('QUVEL_DEVICE_ROUTES_ENABLED', false),
-            'prefix' => 'api/devices',
+            'prefix' => 'devices',
             'name' => 'devices.',
             'middleware' => ['api', 'auth:sanctum'],
+        ],
+
+        /**
+         * Platform settings routes.
+         * Provides server-driven configuration for clients
+         */
+        'platform_settings' => [
+            'enabled' => env('QUVEL_PLATFORM_SETTINGS_ROUTES_ENABLED', false),
+            'prefix' => 'platform-settings',
+            'name' => 'platform-settings.',
+            'middleware' => [],
         ],
     ],
 
@@ -367,6 +378,80 @@ return [
                 'trace',
             ],
         ],
+    ],
 
+    /**
+     * Platform Settings Configuration
+     * Server-driven configuration for clients to fetch on boot.
+     * Supports version requirements, feature flags, rotating keys, etc.
+     */
+    'platform_settings' => [
+        /**
+         * Shared settings applied to all platforms
+         * These are merged with platform-specific settings
+         */
+        'shared' => [
+            'api_version' => '1.0.0',
+            'maintenance_mode' => false,
+            'features' => [
+                // Example feature flags
+                // 'new_ui' => true,
+                // 'beta_features' => false,
+            ],
+        ],
+
+        /**
+         * Platform-specific settings
+         * Keyed by PlatformType value (web, mobile, ios, android, capacitor, cordova, desktop, macos, windows, linux, electron, tauri)
+         * Platform-specific settings override shared settings
+         */
+        'platforms' => [
+            'ios' => [
+                'minimum_version' => env('IOS_MIN_VERSION', '1.0.0'),
+                'latest_version' => env('IOS_LATEST_VERSION', '1.0.0'),
+                'force_update' => env('IOS_FORCE_UPDATE', false),
+                'store_url' => env('IOS_STORE_URL', ''),
+            ],
+            'android' => [
+                'minimum_version' => env('ANDROID_MIN_VERSION', '1.0.0'),
+                'latest_version' => env('ANDROID_LATEST_VERSION', '1.0.0'),
+                'force_update' => env('ANDROID_FORCE_UPDATE', false),
+                'store_url' => env('ANDROID_STORE_URL', ''),
+            ],
+            'capacitor' => [
+                // Example: Capacitor-specific settings
+            ],
+            'cordova' => [
+                // Example: Cordova-specific settings
+            ],
+            'web' => [
+                // Example: Web-specific settings
+            ],
+            'desktop' => [
+                // Example: Desktop-specific settings
+            ],
+            'macos' => [
+                'minimum_version' => env('MACOS_MIN_VERSION', '1.0.0'),
+                'latest_version' => env('MACOS_LATEST_VERSION', '1.0.0'),
+                'force_update' => env('MACOS_FORCE_UPDATE', false),
+            ],
+            'windows' => [
+                'minimum_version' => env('WINDOWS_MIN_VERSION', '1.0.0'),
+                'latest_version' => env('WINDOWS_LATEST_VERSION', '1.0.0'),
+                'force_update' => env('WINDOWS_FORCE_UPDATE', false),
+            ],
+            'linux' => [
+                // Example: Linux-specific settings
+            ],
+            'electron' => [
+                // Example: Electron-specific settings
+            ],
+            'tauri' => [
+                // Example: Tauri-specific settings
+            ],
+            'mobile' => [
+                // Example: Generic mobile settings
+            ],
+        ],
     ],
 ];

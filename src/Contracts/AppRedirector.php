@@ -48,11 +48,6 @@ interface AppRedirector
     public function getPlatform(): string;
 
     /**
-     * Check if the current platform supports app redirects.
-     */
-    public function supportsAppRedirects(): bool;
-
-    /**
      * Validate if a redirect URL is safe.
      */
     public function isValidRedirectUrl(string $url): bool;

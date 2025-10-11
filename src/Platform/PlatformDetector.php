@@ -19,11 +19,26 @@ class PlatformDetector implements PlatformDetectorContract
     }
 
     /**
-     * Get the detected platform type.
+     * Get the detected granular platform type.
      *
-     * @return string Platform type ('web', 'mobile', 'desktop')
+     * @return string Platform type (any PlatformType value)
      */
     public function getPlatform(): string
+    {
+        $platform = PlatformType::tryFrom(
+            $this->request->header(HttpHeader::PLATFORM->getValue(), '')
+        );
+
+        return $platform?->value ?? PlatformType::WEB->value;
+    }
+
+    /**
+     * Get the main platform mode.
+     * Maps all specific platforms to one of the 3 main modes.
+     *
+     * @return string Main mode ('web', 'mobile', 'desktop')
+     */
+    public function getMainMode(): string
     {
         $platform = PlatformType::tryFrom(
             $this->request->header(HttpHeader::PLATFORM->getValue(), '')
@@ -51,7 +66,7 @@ class PlatformDetector implements PlatformDetectorContract
     public function supportsAppRedirects(): bool
     {
         return in_array(
-            $this->getPlatform(),
+            $this->getMainMode(),
             [
                 PlatformType::MOBILE->value,
                 PlatformType::DESKTOP->value

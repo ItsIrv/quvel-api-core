@@ -8,13 +8,23 @@ use Quvel\Core\Contracts\AppRedirector as AppRedirectorContract;
 use Quvel\Core\Facades\PlatformDetector;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
-use Quvel\Core\Platform\PlatformType;
 
 /**
- * Multi-platform app redirection service.
- * Handles redirecting users back to their apps across web, mobile, and desktop platforms.
+ * Frontend redirection service for web and multi-platform apps.
  *
- * ## Redirect Modes
+ * ## Methods
+ *
+ * **redirect() / getUrl()**: Standard URL generation and redirects
+ * - Returns web URLs (HTTPS)
+ * - Use for regular API responses and redirects
+ * - Client applications handle routing appropriately
+ *
+ * **redirectToApp()**: Browser-to-app transition redirects
+ * - Use when transitioning from device browser back to installed app
+ * - Supports multiple redirect modes for different app configurations
+ * - Provides flexibility for various deep linking scenarios
+ *
+ * ## Redirect Modes (for redirectToApp)
  *
  * **universal_links**: Use regular HTTPS URLs
  * - Requires App Site Association (iOS) / Android App Links setup
@@ -23,35 +33,29 @@ use Quvel\Core\Platform\PlatformType;
  * - Example: https://example.com/dashboard → opens app or web
  *
  * **custom_scheme**: Use custom scheme URLs
- * - Replaces https:// with custom scheme (myapp://)
- * - Phone asks "Open in app?" when clicked
+ * - Replaces https:// with a custom scheme (myapp://)
+ * - Phone asks, "Open in app?" when clicked
  * - Works without domain setup, less seamless
  * - Example: myapp://dashboard → phone prompts to open app
  *
  * **landing_page**: Show intermediate page with countdown
  * - User lands on page with countdown timer
- * - Automatically tries to open app, shows manual button
- * - Most reliable, good for auth flows like Socialite
- * - Best accessibility and user control
+ * - Automatically attempts app launch with manual fallback button
+ * - Provides best accessibility and user control
  *
  * **web_only**: Always use web URLs
  * - Never tries to open app, stays in browser
- * - For when you want to keep users on web
+ * - For when you want to keep users on the web
  * - If deep links are set up externally, this will be ignored as that's device functionality.
- *
- * ## Use Cases
- * - Direct API responses to apps (`redirect()` method)
- * - Browser redirects like Socialite auth (`redirectToApp()` method)
  *
  * @see config/quvel.php for configuration options
  */
 class AppRedirector implements AppRedirectorContract
 {
     /**
-     * Smart redirect based on platform and configured redirect mode.
+     * Redirect to a URL.
      *
-     * For app platforms, uses the configured redirect mode.
-     * For web platforms, always does a regular redirect.
+     * Returns a standard web URL redirect. Client applications handle routing.
      *
      * @param string $path Path relative to frontend base URL
      * @param array $queryParams Query parameters to append
@@ -59,11 +63,7 @@ class AppRedirector implements AppRedirectorContract
      */
     public function redirect(string $path = '', array $queryParams = []): RedirectResponse|Response
     {
-        if (PlatformDetector::isPlatform(PlatformType::WEB->value)) {
-            return redirect()->away($this->buildWebUrl($path, $queryParams));
-        }
-
-        return $this->redirectToApp($path, $queryParams);
+        return redirect()->away($this->buildWebUrl($path, $queryParams));
     }
 
     /**
@@ -84,13 +84,10 @@ class AppRedirector implements AppRedirectorContract
     }
 
     /**
-     * Redirect user back to their app (for browser contexts like Socialite).
+     * Redirect from browser context to installed app.
      *
-     * Uses the configured redirect mode:
-     * - 'universal_links': Regular HTTPS redirect
-     * - 'custom_scheme': Custom scheme URL
-     * - 'landing_page': Intermediate page with countdown
-     * - 'web_only': Regular HTTPS redirect
+     * Handles browser-to-app transitions using configured redirect mode.
+     * Supports universal links, custom schemes, and intermediate landing pages.
      *
      * @param string $path Path relative to frontend base URL
      * @param array $queryParams Query parameters to append
@@ -111,24 +108,13 @@ class AppRedirector implements AppRedirectorContract
     /**
      * Get the frontend URL without redirecting.
      *
-     * Returns web URL for web platforms, app URL for app platforms based on redirect mode.
-     *
      * @param string $path Path relative to frontend base URL
      * @param array $queryParams Query parameters to append
      * @return string Complete URL
      */
     public function getUrl(string $path = '', array $queryParams = []): string
     {
-        if (PlatformDetector::isPlatform(PlatformType::WEB->value)) {
-            return $this->buildWebUrl($path, $queryParams);
-        }
-
-        $mode = config('quvel.frontend.redirect_mode', 'universal_links');
-
-        return match ($mode) {
-            'custom_scheme' => $this->buildCustomSchemeUrl($path, $queryParams),
-            default => $this->buildWebUrl($path, $queryParams),
-        };
+        return $this->buildWebUrl($path, $queryParams);
     }
 
     /**
@@ -146,7 +132,7 @@ class AppRedirector implements AppRedirectorContract
     }
 
     /**
-     * Check if current request is from a specific platform.
+     * Check if the current request is from a specific platform.
      *
      * @param string $platform PlatformDetector to check ('web', 'mobile', 'desktop')
      * @return bool True if current platform matches
@@ -164,16 +150,6 @@ class AppRedirector implements AppRedirectorContract
     public function getPlatform(): string
     {
         return PlatformDetector::getPlatform();
-    }
-
-    /**
-     * Check if the current platform supports app redirects.
-     *
-     * @return bool True if platform supports app redirects
-     */
-    public function supportsAppRedirects(): bool
-    {
-        return PlatformDetector::supportsAppRedirects();
     }
 
     /**

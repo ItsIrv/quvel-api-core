@@ -15,6 +15,7 @@ use Quvel\Core\Contracts\DeviceTargets as DeviceTargetsContract;
 use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorContract;
 use Quvel\Core\Contracts\LocaleResolver as LocaleResolverContract;
 use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;
+use Quvel\Core\Contracts\PlatformSettings as PlatformSettingsContract;
 use Quvel\Core\Contracts\PublicIdGenerator as PublicIdGeneratorContract;
 use Quvel\Core\Contracts\PushSender as PushSenderContract;
 use Quvel\Core\Contracts\TraceIdGenerator as TraceIdGeneratorContract;
@@ -24,6 +25,7 @@ use Quvel\Core\Device\DeviceTargets;
 use Quvel\Core\Locale\LocaleResolver;
 use Quvel\Core\Logs\ContextualLogger;
 use Quvel\Core\Platform\PlatformDetector;
+use Quvel\Core\Platform\Settings\PlatformSettings;
 use Quvel\Core\PublicId\PublicIdGenerator;
 use Quvel\Core\PublicId\PublicIdManager;
 use Quvel\Core\Push\PushManager;
@@ -70,6 +72,9 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->scoped(PlatformDetector::class);
         $this->app->scoped(PlatformDetectorContract::class, PlatformDetector::class);
 
+        $this->app->scoped(PlatformSettings::class);
+        $this->app->scoped(PlatformSettingsContract::class, PlatformSettings::class);
+
         $this->app->singleton(Device::class);
         $this->app->singleton(DeviceContract::class, Device::class);
 
@@ -104,6 +109,7 @@ class CoreServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__ . '/../../routes/devices.php' => base_path('routes/devices.php'),
+                __DIR__ . '/../../routes/platform-settings.php' => base_path('routes/platform-settings.php'),
             ], 'quvel-routes');
         }
 
@@ -116,7 +122,7 @@ class CoreServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register device management routes if enabled.
+     * Register API routes if enabled.
      */
     protected function registerRoutes(): void
     {
@@ -125,6 +131,13 @@ class CoreServiceProvider extends ServiceProvider
                 ->prefix(config('quvel.routes.devices.prefix', 'api/devices'))
                 ->name(config('quvel.routes.devices.name', 'devices.'))
                 ->group(__DIR__ . '/../../routes/devices.php');
+        }
+
+        if (config('quvel.routes.platform_settings.enabled', false)) {
+            Route::middleware(config('quvel.routes.platform_settings.middleware', []))
+                ->prefix(config('quvel.routes.platform_settings.prefix', 'api/platform-settings'))
+                ->name(config('quvel.routes.platform_settings.name', 'platform-settings.'))
+                ->group(__DIR__ . '/../../routes/platform-settings.php');
         }
     }
 
