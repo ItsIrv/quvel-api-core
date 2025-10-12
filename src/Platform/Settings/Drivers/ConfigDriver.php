@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Platform\Settings\Drivers;
 
-use Quvel\Core\Contracts\PlatformSettingsDriver;
+use Quvel\Core\Contracts\PlatformSettings;
+use Quvel\Core\Facades\PlatformDetector;
 use Quvel\Core\Platform\PlatformType;
 
 /**
  * Config-based platform settings driver.
  * Reads settings from config files (static, requires redeployment to update).
  */
-class ConfigDriver implements PlatformSettingsDriver
+class ConfigDriver implements PlatformSettings
 {
     /**
      * Get settings for a specific platform.
@@ -46,5 +47,12 @@ class ConfigDriver implements PlatformSettingsDriver
     public function getSharedSettings(): array
     {
         return config('quvel.platform_settings.shared', []);
+    }
+
+    public function getCurrentPlatformSettings(): array
+    {
+        return $this->getSettingsForPlatform(
+            PlatformDetector::getPlatform()
+        );
     }
 }

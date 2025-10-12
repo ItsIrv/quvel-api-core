@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Facade;
  * Platform detection facade.
  *
  * @method static string getPlatform() Get the detected platform type
+ * @method static string getMainMode() Get the main platform mode
  * @method static bool isPlatform(string $platform) Check if current request is from a specific platform
  * @method static bool supportsAppRedirects() Check if platform supports app redirects
  *

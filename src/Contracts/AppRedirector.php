@@ -38,16 +38,6 @@ interface AppRedirector
     public function getUrlWithMessage(string $path, string $message, array $extraParams = []): string;
 
     /**
-     * Check if current request is from a specific platform.
-     */
-    public function isPlatform(string $platform): bool;
-
-    /**
-     * Get the detected platform.
-     */
-    public function getPlatform(): string;
-
-    /**
      * Validate if a redirect URL is safe.
      */
     public function isValidRedirectUrl(string $url): bool;

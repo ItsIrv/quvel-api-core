@@ -86,7 +86,7 @@ class AppRedirector implements AppRedirectorContract
     /**
      * Redirect from browser context to installed app.
      *
-     * Handles browser-to-app transitions using configured redirect mode.
+     * Handles browser-to-app transitions using a configured redirect mode.
      * Supports universal links, custom schemes, and intermediate landing pages.
      *
      * @param string $path Path relative to frontend base URL
@@ -129,27 +129,6 @@ class AppRedirector implements AppRedirectorContract
     {
         $queryParams = array_merge(['message' => $message], $extraParams);
         return $this->getUrl($path, $queryParams);
-    }
-
-    /**
-     * Check if the current request is from a specific platform.
-     *
-     * @param string $platform PlatformDetector to check ('web', 'mobile', 'desktop')
-     * @return bool True if current platform matches
-     */
-    public function isPlatform(string $platform): bool
-    {
-        return PlatformDetector::isPlatform($platform);
-    }
-
-    /**
-     * Get the detected platform type.
-     *
-     * @return string PlatformDetector type ('web', 'mobile', 'desktop')
-     */
-    public function getPlatform(): string
-    {
-        return PlatformDetector::getPlatform();
     }
 
     /**

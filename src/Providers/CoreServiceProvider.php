@@ -16,7 +16,6 @@ use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorCon
 use Quvel\Core\Contracts\LocaleResolver as LocaleResolverContract;
 use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;
 use Quvel\Core\Contracts\PlatformSettings as PlatformSettingsContract;
-use Quvel\Core\Contracts\PlatformSettingsDriver;
 use Quvel\Core\Contracts\PublicIdGenerator as PublicIdGeneratorContract;
 use Quvel\Core\Contracts\PushSender as PushSenderContract;
 use Quvel\Core\Contracts\TraceIdGenerator as TraceIdGeneratorContract;
@@ -67,7 +66,9 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(AppRedirectorContract::class, AppRedirector::class);
 
         $this->app->singleton(PublicIdManager::class);
-        $this->app->singleton(PublicIdGeneratorContract::class, PublicIdGenerator::class);
+        $this->app->singleton(PublicIdGeneratorContract::class, function ($app) {
+            return $app->make(PublicIdManager::class)->getDefaultDriver();
+        });
 
         $this->app->singleton(ContextualLogger::class);
 
@@ -75,19 +76,17 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->scoped(PlatformDetectorContract::class, PlatformDetector::class);
 
         $this->app->singleton(PlatformSettingsManager::class, PlatformSettingsManager::class);
-
-        $this->app->bind(PlatformSettingsDriver::class, function ($app) {
-            return $app->make(PlatformSettingsManager::class)->driver();
+        $this->app->scoped(PlatformSettingsContract::class, static function ($app) {
+            return $app->make(PlatformSettingsManager::class)->getDefaultDriver();
         });
-
-        $this->app->scoped(PlatformSettings::class);
-        $this->app->scoped(PlatformSettingsContract::class, PlatformSettings::class);
 
         $this->app->singleton(Device::class);
         $this->app->singleton(DeviceContract::class, Device::class);
 
         $this->app->singleton(PushManager::class);
-        $this->app->singleton(PushSenderContract::class, PushSender::class);
+        $this->app->singleton(PushSenderContract::class, function ($app) {
+            return $app->make(PushManager::class)->getDefaultDriver();
+        });
 
         $this->app->singleton(DeviceTargeting::class);
         $this->app->singleton(DeviceTargetsContract::class, DeviceTargeting::class);

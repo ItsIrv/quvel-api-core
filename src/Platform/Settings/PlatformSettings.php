@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Quvel\Core\Platform\Settings;
 
 use Quvel\Core\Contracts\PlatformSettings as PlatformSettingsContract;
-use Quvel\Core\Contracts\PlatformSettingsDriver;
 use Quvel\Core\Facades\PlatformDetector;
 
 /**
@@ -15,7 +14,7 @@ use Quvel\Core\Facades\PlatformDetector;
 class PlatformSettings implements PlatformSettingsContract
 {
     public function __construct(
-        private readonly PlatformSettingsDriver $driver
+        private readonly PlatformSettingsContract $driver
     ) {
     }
 

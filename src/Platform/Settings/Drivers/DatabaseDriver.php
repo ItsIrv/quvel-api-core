@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Platform\Settings\Drivers;
 
-use Quvel\Core\Contracts\PlatformSettingsDriver;
+use Quvel\Core\Contracts\PlatformSettings;
+use Quvel\Core\Facades\PlatformDetector;
 use Quvel\Core\Platform\Settings\PlatformSetting;
 
 /**
  * Database-based platform settings driver.
  * Reads settings from a database (dynamic, update without redeployment).
  */
-class DatabaseDriver implements PlatformSettingsDriver
+class DatabaseDriver implements PlatformSettings
 {
     /**
      * Get settings for a specific platform.
@@ -34,5 +35,12 @@ class DatabaseDriver implements PlatformSettingsDriver
     public function getSharedSettings(): array
     {
         return PlatformSetting::getShared();
+    }
+
+    public function getCurrentPlatformSettings(): array
+    {
+        return PlatformSetting::getForPlatform(
+            PlatformDetector::getPlatform()
+        );
     }
 }
