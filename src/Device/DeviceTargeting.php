@@ -6,11 +6,11 @@ namespace Quvel\Core\Device;
 
 use Illuminate\Support\Collection;
 use Quvel\Core\Contracts\Device;
-use Quvel\Core\Contracts\DeviceTargets as DeviceTargetingServiceContract;
+use Quvel\Core\Contracts\DeviceTargeting as DeviceTargetingServiceContract;
 use Quvel\Core\Models\UserDevice;
 use RuntimeException;
 
-class DeviceTargets implements DeviceTargetingServiceContract
+class DeviceTargeting implements DeviceTargetingServiceContract
 {
     public function __construct(
         private readonly Device $device

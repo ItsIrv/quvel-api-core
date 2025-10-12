@@ -11,7 +11,7 @@ use Quvel\Core\Captcha\CaptchaVerifier;
 use Quvel\Core\Contracts\AppRedirector as AppRedirectorContract;
 use Quvel\Core\Contracts\CaptchaVerifier as CaptchaVerifierContract;
 use Quvel\Core\Contracts\Device as DeviceContract;
-use Quvel\Core\Contracts\DeviceTargets as DeviceTargetsContract;
+use Quvel\Core\Contracts\DeviceTargeting as DeviceTargetsContract;
 use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorContract;
 use Quvel\Core\Contracts\LocaleResolver as LocaleResolverContract;
 use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;
@@ -22,7 +22,7 @@ use Quvel\Core\Contracts\PushSender as PushSenderContract;
 use Quvel\Core\Contracts\TraceIdGenerator as TraceIdGeneratorContract;
 use Quvel\Core\Database\BlueprintMacros;
 use Quvel\Core\Device\Device;
-use Quvel\Core\Device\DeviceTargets;
+use Quvel\Core\Device\DeviceTargeting;
 use Quvel\Core\Locale\LocaleResolver;
 use Quvel\Core\Logs\ContextualLogger;
 use Quvel\Core\Platform\PlatformDetector;
@@ -89,8 +89,8 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton(PushManager::class);
         $this->app->singleton(PushSenderContract::class, PushSender::class);
 
-        $this->app->singleton(DeviceTargets::class);
-        $this->app->singleton(DeviceTargetsContract::class, DeviceTargets::class);
+        $this->app->singleton(DeviceTargeting::class);
+        $this->app->singleton(DeviceTargetsContract::class, DeviceTargeting::class);
     }
 
     /**
