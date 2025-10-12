@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Quvel\Core\Actions;
+namespace Quvel\Core\Push\Actions;
 
 use Quvel\Core\Contracts\Device;
 

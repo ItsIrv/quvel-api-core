@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Quvel\Core\Actions;
+namespace Quvel\Core\Device\Actions;
 
 use Quvel\Core\Contracts\Device;
 use Quvel\Core\Models\UserDevice;
 use RuntimeException;
+
+use function Quvel\Core\Actions\auth;
+use function Quvel\Core\Actions\config;
 
 class RegisterDeviceAction
 {

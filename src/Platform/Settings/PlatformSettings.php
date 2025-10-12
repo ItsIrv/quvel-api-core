@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace Quvel\Core\Platform\Settings;
 
 use Quvel\Core\Contracts\PlatformSettings as PlatformSettingsContract;
+use Quvel\Core\Contracts\PlatformSettingsDriver;
 use Quvel\Core\Facades\PlatformDetector;
 
 /**
  * Platform-specific settings resolution.
- * Merges shared configuration with platform-specific overrides.
+ * Delegates to configured driver (config or database).
  */
 class PlatformSettings implements PlatformSettingsContract
 {
+    public function __construct(
+        private readonly PlatformSettingsDriver $driver
+    ) {
+    }
+
     /**
      * Get settings for the current detected platform.
      * Merges shared settings with platform-specific overrides.
@@ -35,10 +41,7 @@ class PlatformSettings implements PlatformSettingsContract
      */
     public function getSettingsForPlatform(string $platform): array
     {
-        $shared = $this->getSharedSettings();
-        $platformSpecific = config("quvel.platform_settings.platforms.$platform", []);
-
-        return array_replace_recursive($shared, $platformSpecific);
+        return $this->driver->getSettingsForPlatform($platform);
     }
 
     /**
@@ -48,6 +51,6 @@ class PlatformSettings implements PlatformSettingsContract
      */
     public function getSharedSettings(): array
     {
-        return config('quvel.platform_settings.shared', []);
+        return $this->driver->getSharedSettings();
     }
 }

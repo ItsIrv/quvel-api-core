@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Quvel\Core\Http\Controllers;
 
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Quvel\Core\Actions\RegisterDeviceAction;
-use Quvel\Core\Actions\UpdatePushTokenAction;
-use Quvel\Core\Actions\DeactivateDeviceAction;
-use Quvel\Core\Actions\GetUserDevicesAction;
-use Quvel\Core\Facades\PlatformDetector;
+use Illuminate\Http\Request;
+use Quvel\Core\Device\Actions\DeactivateDeviceAction;
+use Quvel\Core\Device\Actions\GetUserDevicesAction;
+use Quvel\Core\Device\Actions\RegisterDeviceAction;
 use Quvel\Core\Enums\HttpHeader;
+use Quvel\Core\Facades\PlatformDetector;
+use Quvel\Core\Push\Actions\UpdatePushTokenAction;
 
 class DeviceController
 {

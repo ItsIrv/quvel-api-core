@@ -387,8 +387,21 @@ return [
      */
     'platform_settings' => [
         /**
+         * Driver for storing platform settings
+         * - 'config': Read from config files (static, requires redeployment)
+         * - 'database': Read from a database (dynamic, update without redeployment)
+         */
+        'driver' => env('PLATFORM_SETTINGS_DRIVER', 'config'),
+
+        /**
+         * Database table name (used when the driver is 'database')
+         */
+        'table' => 'platform_settings',
+
+        /**
          * Shared settings applied to all platforms
          * These are merged with platform-specific settings
+         * (Only used when the driver is 'config')
          */
         'shared' => [
             'api_version' => '1.0.0',
@@ -402,56 +415,21 @@ return [
 
         /**
          * Platform-specific settings
-         * Keyed by PlatformType value (web, mobile, ios, android, capacitor, cordova, desktop, macos, windows, linux, electron, tauri)
+         * Keyed by PlatformType
          * Platform-specific settings override shared settings
          */
         'platforms' => [
-            'ios' => [
-                'minimum_version' => env('IOS_MIN_VERSION', '1.0.0'),
-                'latest_version' => env('IOS_LATEST_VERSION', '1.0.0'),
-                'force_update' => env('IOS_FORCE_UPDATE', false),
-                'store_url' => env('IOS_STORE_URL', ''),
-            ],
-            'android' => [
-                'minimum_version' => env('ANDROID_MIN_VERSION', '1.0.0'),
-                'latest_version' => env('ANDROID_LATEST_VERSION', '1.0.0'),
-                'force_update' => env('ANDROID_FORCE_UPDATE', false),
-                'store_url' => env('ANDROID_STORE_URL', ''),
-            ],
-            'capacitor' => [
-                // Example: Capacitor-specific settings
-            ],
-            'cordova' => [
-                // Example: Cordova-specific settings
-            ],
-            'web' => [
+            \Quvel\Core\Platform\PlatformType::WEB->value => [
                 // Example: Web-specific settings
             ],
-            'desktop' => [
-                // Example: Desktop-specific settings
-            ],
-            'macos' => [
-                'minimum_version' => env('MACOS_MIN_VERSION', '1.0.0'),
-                'latest_version' => env('MACOS_LATEST_VERSION', '1.0.0'),
-                'force_update' => env('MACOS_FORCE_UPDATE', false),
-            ],
-            'windows' => [
-                'minimum_version' => env('WINDOWS_MIN_VERSION', '1.0.0'),
-                'latest_version' => env('WINDOWS_LATEST_VERSION', '1.0.0'),
-                'force_update' => env('WINDOWS_FORCE_UPDATE', false),
-            ],
-            'linux' => [
-                // Example: Linux-specific settings
-            ],
-            'electron' => [
-                // Example: Electron-specific settings
-            ],
-            'tauri' => [
-                // Example: Tauri-specific settings
-            ],
-            'mobile' => [
+            \Quvel\Core\Platform\PlatformType::MOBILE->value => [
                 // Example: Generic mobile settings
             ],
+            \Quvel\Core\Platform\PlatformType::DESKTOP->value => [
+                // Example: Desktop-specific settings
+            ],
+
+            // Add more platform-specific settings here
         ],
     ],
 ];

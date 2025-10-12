@@ -16,6 +16,7 @@ use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorCon
 use Quvel\Core\Contracts\LocaleResolver as LocaleResolverContract;
 use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;
 use Quvel\Core\Contracts\PlatformSettings as PlatformSettingsContract;
+use Quvel\Core\Contracts\PlatformSettingsDriver;
 use Quvel\Core\Contracts\PublicIdGenerator as PublicIdGeneratorContract;
 use Quvel\Core\Contracts\PushSender as PushSenderContract;
 use Quvel\Core\Contracts\TraceIdGenerator as TraceIdGeneratorContract;
@@ -26,6 +27,7 @@ use Quvel\Core\Locale\LocaleResolver;
 use Quvel\Core\Logs\ContextualLogger;
 use Quvel\Core\Platform\PlatformDetector;
 use Quvel\Core\Platform\Settings\PlatformSettings;
+use Quvel\Core\Platform\Settings\PlatformSettingsManager;
 use Quvel\Core\PublicId\PublicIdGenerator;
 use Quvel\Core\PublicId\PublicIdManager;
 use Quvel\Core\Push\PushManager;
@@ -71,6 +73,12 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->scoped(PlatformDetector::class);
         $this->app->scoped(PlatformDetectorContract::class, PlatformDetector::class);
+
+        $this->app->singleton(PlatformSettingsManager::class, PlatformSettingsManager::class);
+
+        $this->app->bind(PlatformSettingsDriver::class, function ($app) {
+            return $app->make(PlatformSettingsManager::class)->driver();
+        });
 
         $this->app->scoped(PlatformSettings::class);
         $this->app->scoped(PlatformSettingsContract::class, PlatformSettings::class);
