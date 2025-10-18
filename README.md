@@ -415,47 +415,51 @@ $platform = Platform::getPlatform(); // 'web', 'mobile', or 'desktop'
 if (Platform::isPlatform('mobile')) {
     // Mobile-specific logic
 }
-
-if (Platform::supportsAppRedirects()) {
-    // Platform supports deep links (mobile or desktop)
-}
 ```
 
-**Platform enum:**
+**Platform tags:**
 ```php
-use Quvel\Core\Platform\PlatformType;
+use Quvel\Core\Platform\PlatformTag;
 
-PlatformType::IOS->value;        // 'ios'
-PlatformType::ANDROID->value;    // 'android'
-PlatformType::ELECTRON->value;   // 'electron'
+PlatformTag::IOS->value;        // 'ios'
+PlatformTag::ANDROID->value;    // 'android'
+PlatformTag::ELECTRON->value;   // 'electron'
+PlatformTag::TABLET->value;     // 'tablet'
+PlatformTag::SCREEN_LG->value;  // 'screen:lg'
 
-$platform = PlatformType::tryFrom('ios');
-$mode = $platform->getMainMode(); // 'mobile'
-
-$platform->isMobile();   // true for mobile platforms
-$platform->isDesktop();  // true for desktop platforms
-$platform->isApple();    // true for iOS/macOS
+$tag = PlatformTag::tryFrom('ios');
+$mode = $tag->getMainMode(); // 'mobile'
+$category = $tag->getCategory(); // 'os'
 ```
 
-**Available platforms:**
-- Web: `web`
-- Mobile: `mobile`, `android`, `ios`, `capacitor`, `cordova`
-- Desktop: `desktop`, `macos`, `windows`, `linux`, `electron`, `tauri`
+**Available platform tags:**
+- Runtime: `web`, `capacitor`, `cordova`, `electron`, `tauri`
+- OS: `ios`, `android`, `macos`, `windows`, `linux`
+- Form Factor: `mobile`, `tablet`, `desktop`
+- Screen Sizes: `screen:xs`, `screen:sm`, `screen:md`, `screen:lg`, `screen:xl`
 
 ### Frontend Integration
 
 ```js
-// Capacitor
+// Multi-tag platform detection (comma-separated)
+// iPhone in Capacitor
 fetch('/api/endpoint', {
     headers: {
-        'X-Platform': 'capacitor'
+        'X-Platform': 'capacitor,ios,mobile,screen:sm'
     }
 });
 
-// Electron
+// iPad in Safari
 fetch('/api/endpoint', {
     headers: {
-        'X-Platform': 'electron'
+        'X-Platform': 'web,ios,tablet,screen:lg'
+    }
+});
+
+// Electron on macOS
+fetch('/api/endpoint', {
+    headers: {
+        'X-Platform': 'electron,macos,desktop,screen:xl'
     }
 });
 ```
