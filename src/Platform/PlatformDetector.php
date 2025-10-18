@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Quvel\Core\Platform;
 
 use Illuminate\Http\Request;
-use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;;
+use Quvel\Core\Contracts\PlatformDetector as PlatformDetectorContract;
 use Quvel\Core\Enums\HttpHeader;
 
 /**
  * Platform detection for identifying app types from requests.
+ * Supports multi-tag platform detection (e.g., "capacitor,ios,tablet,screen:md").
  */
 class PlatformDetector implements PlatformDetectorContract
 {
@@ -19,17 +20,39 @@ class PlatformDetector implements PlatformDetectorContract
     }
 
     /**
-     * Get the detected granular platform type.
+     * Get all detected platform tags from the request.
      *
-     * @return string Platform type (any PlatformType value)
+     * @return array Array of platform tag strings
      */
-    public function getPlatform(): string
+    public function getPlatforms(): array
     {
-        $platform = PlatformType::tryFrom(
-            $this->request->header(HttpHeader::PLATFORM->getValue(), '')
-        );
+        $headerValue = $this->request->header(HttpHeader::PLATFORM->getValue(), '');
 
-        return $platform?->value ?? PlatformType::WEB->value;
+        if (empty($headerValue)) {
+            return [PlatformTag::WEB->value];
+        }
+
+        $tags = array_map('trim', explode(',', $headerValue, 5));
+
+        $validTags = [];
+        foreach ($tags as $tag) {
+            if (PlatformTag::tryFrom($tag) !== null) {
+                $validTags[] = $tag;
+            }
+        }
+
+        return !empty($validTags) ? $validTags : [PlatformTag::WEB->value];
+    }
+
+    /**
+     * Check if the current request has a specific platform tag.
+     *
+     * @param string $tag Platform tag to check
+     * @return bool True if the tag is present
+     */
+    public function hasPlatform(string $tag): bool
+    {
+        return in_array($tag, $this->getPlatforms(), true);
     }
 
     /**
@@ -40,38 +63,17 @@ class PlatformDetector implements PlatformDetectorContract
      */
     public function getMainMode(): string
     {
-        $platform = PlatformType::tryFrom(
-            $this->request->header(HttpHeader::PLATFORM->getValue(), '')
-        );
+        $platforms = $this->getPlatforms();
 
-        return $platform?->getMainMode() ?? PlatformType::WEB->value;
-    }
+        foreach ($platforms as $platformValue) {
+            $tag = PlatformTag::from($platformValue);
+            $mainMode = $tag->getMainMode();
 
-    /**
-     * Check if the current request is from a specific platform.
-     *
-     * @param string $platform Platform to check ('web', 'mobile', 'desktop')
-     * @return bool True if current platform matches
-     */
-    public function isPlatform(string $platform): bool
-    {
-        return $this->getPlatform() === $platform;
-    }
+            if ($mainMode !== PlatformTag::WEB->value) {
+                return $mainMode;
+            }
+        }
 
-    /**
-     * Check if the current platform supports app redirects.
-     *
-     * @return bool True if the platform supports app redirects
-     */
-    public function supportsAppRedirects(): bool
-    {
-        return in_array(
-            $this->getMainMode(),
-            [
-                PlatformType::MOBILE->value,
-                PlatformType::DESKTOP->value
-            ],
-            true
-        );
+        return PlatformTag::WEB->value;
     }
 }

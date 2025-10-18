@@ -7,7 +7,7 @@ namespace Quvel\Core\Push\Drivers;
 use JsonException;
 use Quvel\Core\Contracts\PushDriver;
 use Quvel\Core\Models\UserDevice;
-use Quvel\Core\Platform\PlatformType;
+use Quvel\Core\Platform\PlatformTag;
 
 class ApnsDriver implements PushDriver
 {
@@ -19,8 +19,8 @@ class ApnsDriver implements PushDriver
     public function supports(string $platform): bool
     {
         return in_array($platform, [
-            PlatformType::IOS->value,
-            PlatformType::MACOS->value,
+            PlatformTag::IOS->value,
+            PlatformTag::MACOS->value,
         ], true);
     }
 

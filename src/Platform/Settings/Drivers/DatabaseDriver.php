@@ -15,16 +15,16 @@ use Quvel\Core\Platform\Settings\PlatformSetting;
 class DatabaseDriver implements PlatformSettings
 {
     /**
-     * Get settings for a specific platform.
-     * Merges shared settings with the main mode and platform-specific overrides.
-     * Inheritance: shared -> main mode -> specific platform
+     * Get settings for specific platforms.
+     * Merges shared settings with all platform-specific overrides in order.
+     * Inheritance: shared -> platform1 -> platform2 -> platform3...
      *
-     * @param string $platform Platform type (any PlatformType value)
-     * @return array Merged settings for the specified platform
+     * @param array $platforms Array of platform tags
+     * @return array Merged settings for the specified platforms
      */
-    public function getSettingsForPlatform(string $platform): array
+    public function getSettingsForPlatforms(array $platforms): array
     {
-        return PlatformSetting::getForPlatform($platform);
+        return PlatformSetting::getForPlatforms($platforms);
     }
 
     /**
@@ -39,8 +39,8 @@ class DatabaseDriver implements PlatformSettings
 
     public function getCurrentPlatformSettings(): array
     {
-        return PlatformSetting::getForPlatform(
-            PlatformDetector::getPlatform()
+        return PlatformSetting::getForPlatforms(
+            PlatformDetector::getPlatforms()
         );
     }
 }

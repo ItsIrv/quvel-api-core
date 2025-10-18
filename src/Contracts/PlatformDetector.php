@@ -10,11 +10,19 @@ namespace Quvel\Core\Contracts;
 interface PlatformDetector
 {
     /**
-     * Get the detected granular platform type.
+     * Get all detected platform tags from the request.
      *
-     * @return string Platform type (any PlatformType value: 'web', 'mobile', 'ios', 'android', 'capacitor', etc.)
+     * @return array Array of platform tag strings (e.g., ['capacitor', 'ios', 'tablet', 'screen:md'])
      */
-    public function getPlatform(): string;
+    public function getPlatforms(): array;
+
+    /**
+     * Check if the current request has a specific platform tag.
+     *
+     * @param string $tag Platform tag to check
+     * @return bool True if the tag is present
+     */
+    public function hasPlatform(string $tag): bool;
 
     /**
      * Get the main platform mode.
@@ -23,19 +31,4 @@ interface PlatformDetector
      * @return string Main mode ('web', 'mobile', 'desktop')
      */
     public function getMainMode(): string;
-
-    /**
-     * Check if the current request is from a specific platform.
-     *
-     * @param string $platform Platform to check (any PlatformType value)
-     * @return bool True if current platform matches
-     */
-    public function isPlatform(string $platform): bool;
-
-    /**
-     * Check if the current platform supports app redirects.
-     *
-     * @return bool True if a platform supports app redirects
-     */
-    public function supportsAppRedirects(): bool;
 }

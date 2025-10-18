@@ -25,12 +25,9 @@ use Quvel\Core\Device\DeviceTargeting;
 use Quvel\Core\Locale\LocaleResolver;
 use Quvel\Core\Logs\ContextualLogger;
 use Quvel\Core\Platform\PlatformDetector;
-use Quvel\Core\Platform\Settings\PlatformSettings;
 use Quvel\Core\Platform\Settings\PlatformSettingsManager;
-use Quvel\Core\PublicId\PublicIdGenerator;
 use Quvel\Core\PublicId\PublicIdManager;
 use Quvel\Core\Push\PushManager;
-use Quvel\Core\Push\PushSender;
 use Quvel\Core\Redirect\AppRedirector;
 use Quvel\Core\Services\InternalRequestValidator;
 use Quvel\Core\Tracing\TraceIdGenerator;
@@ -67,7 +64,7 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(PublicIdManager::class);
         $this->app->singleton(PublicIdGeneratorContract::class, function ($app) {
-            return $app->make(PublicIdManager::class)->getDefaultDriver();
+            return $app->make(PublicIdManager::class)->driver();
         });
 
         $this->app->singleton(ContextualLogger::class);
@@ -75,9 +72,9 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->scoped(PlatformDetector::class);
         $this->app->scoped(PlatformDetectorContract::class, PlatformDetector::class);
 
-        $this->app->singleton(PlatformSettingsManager::class, PlatformSettingsManager::class);
+        $this->app->singleton(PlatformSettingsManager::class);
         $this->app->scoped(PlatformSettingsContract::class, static function ($app) {
-            return $app->make(PlatformSettingsManager::class)->getDefaultDriver();
+            return $app->make(PlatformSettingsManager::class)->driver();
         });
 
         $this->app->singleton(Device::class);
@@ -85,7 +82,7 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(PushManager::class);
         $this->app->singleton(PushSenderContract::class, function ($app) {
-            return $app->make(PushManager::class)->getDefaultDriver();
+            return $app->make(PushManager::class)->driver();
         });
 
         $this->app->singleton(DeviceTargeting::class);

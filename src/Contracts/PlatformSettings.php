@@ -5,26 +5,26 @@ declare(strict_types=1);
 namespace Quvel\Core\Contracts;
 
 /**
- * Contract for platform-specific settings resolution.
+ * Contract for platform settings resolution.
  */
 interface PlatformSettings
 {
     /**
-     * Get settings for the current detected platform.
-     * Merges shared settings with platform-specific overrides.
+     * Get settings for the current detected platforms.
+     * Merges shared settings with all platform-specific overrides.
      *
-     * @return array Merged settings for the current platform
+     * @return array Merged settings for the current platforms
      */
     public function getCurrentPlatformSettings(): array;
 
     /**
-     * Get settings for a specific platform.
-     * Merges shared settings with platform-specific overrides.
+     * Get settings for specific platforms.
+     * Merges shared settings with all platform-specific overrides in order.
      *
-     * @param string $platform Platform type (any PlatformType value)
-     * @return array Merged settings for the specified platform
+     * @param array $platforms Array of platform tags
+     * @return array Merged settings for the specified platforms
      */
-    public function getSettingsForPlatform(string $platform): array;
+    public function getSettingsForPlatforms(array $platforms): array;
 
     /**
      * Get shared settings applied to all platforms.

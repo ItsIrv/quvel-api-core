@@ -6,7 +6,6 @@ namespace Quvel\Core\Platform\Settings\Drivers;
 
 use Quvel\Core\Contracts\PlatformSettings;
 use Quvel\Core\Facades\PlatformDetector;
-use Quvel\Core\Platform\PlatformType;
 
 /**
  * Config-based platform settings driver.
@@ -15,28 +14,26 @@ use Quvel\Core\Platform\PlatformType;
 class ConfigDriver implements PlatformSettings
 {
     /**
-     * Get settings for a specific platform.
-     * Merges shared settings with the main mode and platform-specific overrides.
-     * Inheritance: shared -> main mode -> specific platform
+     * Get settings for specific platforms.
+     * Merges shared settings with all platform-specific overrides in order.
+     * Inheritance: shared -> platform1 -> platform2 -> platform3...
      *
-     * @param string $platform Platform type (any PlatformType value)
-     * @return array Merged settings for the specified platform
+     * @param array $platforms Array of platform tags
+     * @return array Merged settings for the specified platforms
      */
-    public function getSettingsForPlatform(string $platform): array
+    public function getSettingsForPlatforms(array $platforms): array
     {
-        $shared = $this->getSharedSettings();
+        $allSettings = [$this->getSharedSettings()];
 
-        $platformType = PlatformType::tryFrom($platform);
-        $mainMode = $platformType?->getMainMode() ?? $platform;
+        foreach ($platforms as $platform) {
+            $platformSettings = config("quvel.platform_settings.platforms.$platform", []);
 
-        $mainModeSettings = [];
-        if ($mainMode !== $platform) {
-            $mainModeSettings = config("quvel.platform_settings.platforms.$mainMode", []);
+            if (!empty($platformSettings)) {
+                $allSettings[] = $platformSettings;
+            }
         }
 
-        $platformSpecific = config("quvel.platform_settings.platforms.$platform", []);
-
-        return array_replace_recursive($shared, $mainModeSettings, $platformSpecific);
+        return array_replace_recursive(...$allSettings);
     }
 
     /**
@@ -51,8 +48,8 @@ class ConfigDriver implements PlatformSettings
 
     public function getCurrentPlatformSettings(): array
     {
-        return $this->getSettingsForPlatform(
-            PlatformDetector::getPlatform()
+        return $this->getSettingsForPlatforms(
+            PlatformDetector::getPlatforms()
         );
     }
 }

@@ -6,7 +6,6 @@ namespace Quvel\Core\Platform\Settings;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Quvel\Core\Platform\PlatformType;
 
 /**
  * Platform setting model.
@@ -34,24 +33,26 @@ class PlatformSetting extends Model
     }
 
     /**
-     * Get settings for a platform with inheritance.
-     * Inheritance order: shared → main mode → specific platform
+     * Get settings for multiple platforms with inheritance.
+     * Inheritance order: shared → platform1 → platform2 → platform3...
      */
-    public static function getForPlatform(string $platform): array
+    public static function getForPlatforms(array $platforms): array
     {
-        $shared = self::getShared();
+        $allSettings = [self::getShared()];
 
-        $platformType = PlatformType::tryFrom($platform);
-        $mainMode = $platformType?->getMainMode() ?? $platform;
+        if (!empty($platforms)) {
+            $platformRecords = self::whereIn('platform', $platforms)->get();
 
-        $mainModeSettings = [];
-        if ($mainMode !== $platform) {
-            $mainModeSettings = self::where('platform', $mainMode)->first()?->settings ?? [];
+            foreach ($platforms as $platform) {
+                $record = $platformRecords->firstWhere('platform', $platform);
+
+                if ($record && !empty($record->settings)) {
+                    $allSettings[] = $record->settings;
+                }
+            }
         }
 
-        $platformSettings = self::where('platform', $platform)->first()?->settings ?? [];
-
-        return array_replace_recursive($shared, $mainModeSettings, $platformSettings);
+        return array_replace_recursive(...$allSettings);
     }
 
     /**

@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Facade;
 /**
  * Platform settings facade.
  *
- * @method static array getCurrentPlatformSettings() Get settings for the current detected platform
- * @method static array getSettingsForPlatform(string $platform) Get settings for a specific platform
+ * @method static array getCurrentPlatformSettings() Get settings for the current detected platforms
+ * @method static array getSettingsForPlatforms(array $platforms) Get settings for specific platforms
  * @method static array getSharedSettings() Get shared settings applied to all platforms
  *
  * @see \Quvel\Core\Platform\Settings\PlatformSettings

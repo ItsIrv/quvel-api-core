@@ -19,11 +19,11 @@ class PlatformDetectionMiddleware
      */
     public function handle(Request $request, Closure $next, bool $includeUserAgent = false): mixed
     {
-        $platform = PlatformDetector::getPlatform();
+        $platforms = PlatformDetector::getPlatforms();
 
-        Context::add('platform', $platform);
+        Context::add('platforms', $platforms);
 
-        $request->attributes->set('platform', $platform);
+        $request->attributes->set('platforms', $platforms);
 
         if ($includeUserAgent) {
             $userAgent = $request->userAgent();

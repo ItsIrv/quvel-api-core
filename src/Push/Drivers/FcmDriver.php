@@ -8,7 +8,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Quvel\Core\Contracts\PushDriver;
 use Quvel\Core\Models\UserDevice;
-use Quvel\Core\Platform\PlatformType;
+use Quvel\Core\Platform\PlatformTag;
 
 class FcmDriver implements PushDriver
 {
@@ -43,9 +43,9 @@ class FcmDriver implements PushDriver
     public function supports(string $platform): bool
     {
         return in_array($platform, [
-            PlatformType::MOBILE->value,
-            PlatformType::ANDROID->value,
-            PlatformType::WEB->value,
+            PlatformTag::MOBILE->value,
+            PlatformTag::ANDROID->value,
+            PlatformTag::WEB->value,
         ], true);
     }
 

@@ -34,7 +34,8 @@ class DeviceController
         ]);
 
         if (!isset($validated['platform'])) {
-            $validated['platform'] = PlatformDetector::getPlatform();
+            $platforms = PlatformDetector::getPlatforms();
+            $validated['platform'] = implode(',', $platforms);
         }
 
         $validated['user_agent'] = $request->userAgent();

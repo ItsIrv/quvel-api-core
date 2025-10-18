@@ -7,7 +7,7 @@ namespace Quvel\Core\Push\Drivers;
 use JsonException;
 use Quvel\Core\Contracts\PushDriver;
 use Quvel\Core\Models\UserDevice;
-use Quvel\Core\Platform\PlatformType;
+use Quvel\Core\Platform\PlatformTag;
 use Random\RandomException;
 
 class WebPushDriver implements PushDriver
@@ -20,8 +20,8 @@ class WebPushDriver implements PushDriver
     public function supports(string $platform): bool
     {
         return in_array($platform, [
-            PlatformType::WEB->value,
-            PlatformType::DESKTOP->value,
+            PlatformTag::WEB->value,
+            PlatformTag::DESKTOP->value,
         ], true);
     }
 

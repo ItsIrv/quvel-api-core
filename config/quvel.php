@@ -415,19 +415,32 @@ return [
 
         /**
          * Platform-specific settings
-         * Keyed by PlatformType
-         * Platform-specific settings override shared settings
+         * Keyed by platform tag (e.g., 'web', 'mobile', 'ios', 'tablet', 'screen:lg')
+         * Platform-specific settings override shared settings.
+         * Settings are merged in the order they appear in the X-Platform header
          */
         'platforms' => [
-            \Quvel\Core\Platform\PlatformType::WEB->value => [
+            \Quvel\Core\Platform\PlatformTag::WEB->value => [
                 // Example: Web-specific settings
             ],
-            \Quvel\Core\Platform\PlatformType::MOBILE->value => [
+            \Quvel\Core\Platform\PlatformTag::MOBILE->value => [
                 // Example: Generic mobile settings
             ],
-            \Quvel\Core\Platform\PlatformType::DESKTOP->value => [
+            \Quvel\Core\Platform\PlatformTag::TABLET->value => [
+                // Example: Tablet-specific settings
+            ],
+            \Quvel\Core\Platform\PlatformTag::DESKTOP->value => [
                 // Example: Desktop-specific settings
             ],
+            \Quvel\Core\Platform\PlatformTag::IOS->value => [
+                // Example: iOS-specific settings
+            ],
+            \Quvel\Core\Platform\PlatformTag::ANDROID->value => [
+                // Example: Android-specific settings
+            ],
+            \Quvel\Core\Platform\PlatformTag::SCREEN_XS->value => [
+                // Example: Extra-small screen settings
+            ]
 
             // Add more platform-specific settings here
         ],

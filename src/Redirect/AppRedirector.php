@@ -222,7 +222,7 @@ class AppRedirector implements AppRedirectorContract
             'appUrl' => $appUrl,
             'webUrl' => $webUrl,
             'timeout' => $timeout,
-            'platform' => PlatformDetector::getPlatform(),
+            'platforms' => PlatformDetector::getPlatforms(),
         ]);
     }
 

@@ -19,28 +19,28 @@ class PlatformSettings implements PlatformSettingsContract
     }
 
     /**
-     * Get settings for the current detected platform.
-     * Merges shared settings with platform-specific overrides.
+     * Get settings for the current detected platforms.
+     * Merges shared settings with all platform-specific overrides.
      *
-     * @return array Merged settings for the current platform
+     * @return array Merged settings for the current platforms
      */
     public function getCurrentPlatformSettings(): array
     {
-        return $this->getSettingsForPlatform(
-            PlatformDetector::getPlatform()
+        return $this->getSettingsForPlatforms(
+            PlatformDetector::getPlatforms()
         );
     }
 
     /**
-     * Get settings for a specific platform.
-     * Merges shared settings with platform-specific overrides.
+     * Get settings for specific platforms.
+     * Merges shared settings with all platform-specific overrides in order.
      *
-     * @param string $platform Platform type (any PlatformType value)
-     * @return array Merged settings for the specified platform
+     * @param array $platforms Array of platform tags
+     * @return array Merged settings for the specified platforms
      */
-    public function getSettingsForPlatform(string $platform): array
+    public function getSettingsForPlatforms(array $platforms): array
     {
-        return $this->driver->getSettingsForPlatform($platform);
+        return $this->driver->getSettingsForPlatforms($platforms);
     }
 
     /**

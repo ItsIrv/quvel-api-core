@@ -9,12 +9,11 @@ use Illuminate\Support\Facades\Facade;
 /**
  * Platform detection facade.
  *
- * @method static string getPlatform() Get the detected platform type
+ * @method static array getPlatforms() Get all detected platform tags
+ * @method static bool hasPlatform(string $tag) Check if the current request has a specific platform tag
  * @method static string getMainMode() Get the main platform mode
- * @method static bool isPlatform(string $platform) Check if current request is from a specific platform
- * @method static bool supportsAppRedirects() Check if platform supports app redirects
  *
- * @see PlatformDetector
+ * @see \Quvel\Core\Platform\PlatformDetector
  */
 class PlatformDetector extends Facade
 {
