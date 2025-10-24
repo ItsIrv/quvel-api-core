@@ -64,7 +64,9 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(PublicIdManager::class);
         $this->app->singleton(PublicIdGeneratorContract::class, function ($app) {
-            return $app->make(PublicIdManager::class)->driver();
+            /** @var PublicIdManager $manager */
+            $manager = $app->make(PublicIdManager::class);
+            return $manager->driver($manager->getDefaultDriver());
         });
 
         $this->app->singleton(ContextualLogger::class);
@@ -74,7 +76,9 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(PlatformSettingsManager::class);
         $this->app->scoped(PlatformSettingsContract::class, static function ($app) {
-            return $app->make(PlatformSettingsManager::class)->driver();
+            /** @var PlatformSettingsManager $manager */
+            $manager = $app->make(PlatformSettingsManager::class);
+            return $manager->driver($manager->getDefaultDriver());
         });
 
         $this->app->singleton(Device::class);
@@ -82,7 +86,9 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(PushManager::class);
         $this->app->singleton(PushSenderContract::class, function ($app) {
-            return $app->make(PushManager::class)->driver();
+            /** @var PushManager $manager */
+            $manager = $app->make(PushManager::class);
+            return $manager->driver($manager->getDefaultDriver());
         });
 
         $this->app->singleton(DeviceTargeting::class);

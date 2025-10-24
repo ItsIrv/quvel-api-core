@@ -50,10 +50,10 @@ class TraceIdGenerator implements TraceIdGeneratorContract
 
         if ($headerTraceId && $this->shouldAcceptTraceHeader($request, $headerTraceId)) {
             PublicTraceAccepted::dispatch(
-                traceId: $headerTraceId,
-                endpoint: $request->getPathInfo(),
-                ipAddress: $request->ip(),
-                userAgent: $request->userAgent()
+                $headerTraceId,
+                $request->getPathInfo(),
+                $request->ip(),
+                $request->userAgent()
             );
 
             return (string) $headerTraceId;
