@@ -15,7 +15,7 @@ use Quvel\Core\Enums\HttpHeader;
 class TraceMiddleware
 {
     public function __construct(
-        private readonly TraceIdGeneratorContract $traceManager
+        private readonly TraceIdGeneratorContract $traceIdGenerator
     ) {
     }
 
@@ -24,13 +24,13 @@ class TraceMiddleware
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        if (!$this->traceManager->isEnabled()) {
+        if (!$this->traceIdGenerator->isEnabled()) {
             return $next($request);
         }
 
-        $traceId = $this->traceManager->getOrGenerateTraceId($request);
+        $traceId = $this->traceIdGenerator->getOrGenerateTraceId($request);
 
-        $this->traceManager->addToContext($traceId);
+        $this->traceIdGenerator->addToContext($traceId);
 
         $response = $next($request);
 

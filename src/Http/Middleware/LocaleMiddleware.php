@@ -14,7 +14,7 @@ use Quvel\Core\Contracts\LocaleResolver as LocaleResolverContract;
 class LocaleMiddleware
 {
     public function __construct(
-        private readonly LocaleResolverContract $localeManager
+        private readonly LocaleResolverContract $localeResolver
     ) {
     }
 
@@ -23,10 +23,10 @@ class LocaleMiddleware
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        $locale = $this->localeManager->detectLocale($request);
+        $locale = $this->localeResolver->detectLocale($request);
 
-        if ($locale && $this->localeManager->isAllowedLocale($locale)) {
-            $this->localeManager->setLocale($this->localeManager->normalizeLocale($locale));
+        if ($locale && $this->localeResolver->isAllowedLocale($locale)) {
+            $this->localeResolver->setLocale($this->localeResolver->normalizeLocale($locale));
         }
 
         return $next($request);
