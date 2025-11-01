@@ -23,7 +23,6 @@ use Quvel\Core\Database\BlueprintMacros;
 use Quvel\Core\Device\Device;
 use Quvel\Core\Device\DeviceTargeting;
 use Quvel\Core\Locale\LocaleResolver;
-use Quvel\Core\Logs\ContextualLogger;
 use Quvel\Core\Platform\PlatformDetector;
 use Quvel\Core\Platform\Settings\PlatformSettingsManager;
 use Quvel\Core\PublicId\PublicIdManager;
@@ -68,8 +67,6 @@ class CoreServiceProvider extends ServiceProvider
             $manager = $app->make(PublicIdManager::class);
             return $manager->driver($manager->getDefaultDriver());
         });
-
-        $this->app->singleton(ContextualLogger::class);
 
         $this->app->scoped(PlatformDetector::class);
         $this->app->scoped(PlatformDetectorContract::class, PlatformDetector::class);

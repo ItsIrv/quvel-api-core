@@ -27,7 +27,6 @@ php artisan migrate
 - [Platform Detection](#platform-detection)
 - [Locale Management](#locale-management)
 - [Distributed Tracing](#distributed-tracing)
-- [Logging](#logging)
 - [Public IDs](#public-ids)
 - [Redirects](#redirects)
 - [Security](#security)
@@ -529,18 +528,6 @@ use Illuminate\Support\Facades\Context;
 $traceId = Context::get('trace_id');
 ```
 
-### Logging with Trace Context
-
-```php
-use Quvel\Core\Logs\ContextualLogger;
-
-$logger = new ContextualLogger(['user_id' => auth()->id()]);
-
-$logger->info('Action performed', ['action' => 'update_profile']);
-
-// Automatically includes trace_id in log context
-```
-
 ### Frontend Integration
 
 ```js
@@ -551,60 +538,6 @@ fetch('/api/endpoint', {
         'X-Trace-ID': traceId
     }
 });
-```
-
----
-
-## Logging
-
-Enhanced logging with automatic sanitization of sensitive data.
-
-### Contextual Logging
-
-```php
-use Quvel\Core\Logs\ContextualLogger;
-
-$logger = new ContextualLogger(['user_id' => auth()->id()]);
-
-$logger->info('Action performed', ['action' => 'update_profile']);
-
-// Output includes trace_id, user_id, and context automatically
-```
-
-### Sanitized Logging
-
-```php
-use Quvel\Core\Logs\SanitizedContext;
-
-$context = [
-    'email' => 'user@example.com',
-    'password' => 'secret123',
-    'api_key' => 'sk_live_123',
-];
-
-$sanitized = SanitizedContext::sanitize($context);
-
-// Result:
-// [
-//     'email' => 'example.com',  // domain_only
-//     // password removed
-//     'api_key' => 'sha256:...'  // hashed
-// ]
-```
-
-### Configuration
-
-```php
-// config/quvel.php
-'logging' => [
-    'sanitization_rules' => [
-        'password' => 'remove',
-        'token' => 'hash',
-        'email' => 'domain_only',
-        'credit_card' => 'mask',
-    ],
-    'use_global_sanitization' => env('LOG_USE_GLOBAL_SANITIZATION', true),
-],
 ```
 
 ---
