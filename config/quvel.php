@@ -329,7 +329,7 @@ return [
             'enabled' => env('QUVEL_DEVICE_ROUTES_ENABLED', false),
             'prefix' => 'devices',
             'name' => 'devices.',
-            'middleware' => ['api', 'auth:sanctum'],
+            'middleware' => [],
         ],
 
         /**

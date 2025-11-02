@@ -4,20 +4,166 @@ A Laravel package providing essential utilities for full-stack applications incl
 
 ## Installation
 
+### Step 1: Add the Package
+
+Install via composer:
+
 ```bash
 composer require quvel/core
 ```
 
-Publish configuration:
+### Step 2: Publish Configuration
+
+Publish the configuration file to `config/quvel.php`:
+
 ```bash
 php artisan vendor:publish --tag=quvel-config
 ```
 
-Publish migrations:
+This creates `config/quvel.php` with all available options.
+
+### Step 3: Publish and Run Migrations
+
+Publish the migrations:
+
 ```bash
 php artisan vendor:publish --tag=quvel-migrations
+```
+
+This publishes:
+- `2024_01_01_000000_create_platform_settings_table` - For platform-specific settings
+- `2024_01_01_000001_create_user_devices_table` - For device management
+
+**Note**: Migration filenames include timestamps (YYYY_MM_DD_HHMMSS format) to ensure they run in the correct order. The timestamps are part of Laravel's convention for managing database schema versions.
+
+Run the migrations:
+
+```bash
 php artisan migrate
 ```
+
+### Step 4: Configure Environment Variables
+
+Add the following to your `.env` file (optional, depending on features you use):
+
+```env
+# Captcha (Google reCAPTCHA)
+CAPTCHA_ENABLED=true
+RECAPTCHA_SECRET_KEY=your-secret-key
+RECAPTCHA_SITE_KEY=your-site-key
+RECAPTCHA_SCORE_THRESHOLD=0.5
+
+# Push Notifications
+PUSH_ENABLED=true
+PUSH_DRIVERS=fcm,apns,web
+
+# FCM (Firebase Cloud Messaging)
+FCM_SERVER_KEY=your-fcm-server-key
+FCM_PROJECT_ID=your-fcm-project-id
+
+# APNS (Apple Push Notification Service)
+APNS_KEY_PATH=/path/to/apns/key.p8
+APNS_KEY_ID=your-key-id
+APNS_TEAM_ID=your-team-id
+APNS_BUNDLE_ID=com.yourapp.bundle
+APNS_ENVIRONMENT=sandbox # or 'production'
+
+# Web Push (VAPID)
+VAPID_SUBJECT=mailto:your@email.com
+VAPID_PUBLIC_KEY=your-public-key
+VAPID_PRIVATE_KEY=your-private-key
+
+# Device Management
+DEVICES_ENABLED=true
+DEVICES_ALLOW_ANONYMOUS=false
+DEVICES_CLEANUP_DAYS=90
+DEVICES_MAX_PER_USER=10
+
+# Frontend/Redirects
+FRONTEND_URL=http://localhost:3000
+FRONTEND_REDIRECT_MODE=universal_links # or 'custom_scheme', 'landing_page', 'web_only'
+FRONTEND_CUSTOM_SCHEME=myapp
+FRONTEND_LANDING_PAGE_TIMEOUT=5
+
+# Security
+SECURITY_TRUSTED_IPS=127.0.0.1,::1
+SECURITY_API_KEY=your-internal-api-key
+SECURITY_DISABLE_IP_CHECK=false
+SECURITY_DISABLE_KEY_CHECK=false
+
+# Tracing
+TRACING_ENABLED=true
+TRACING_ACCEPT_EXTERNAL=true
+
+# Locale
+LOCALE_ALLOWED=en,es,fr
+LOCALE_FALLBACK=en
+LOCALE_NORMALIZE=true
+
+# Platform Detection
+HEADER_PLATFORM=X-Platform
+HEADER_TRACE_ID=X-Trace-ID
+
+# Public IDs
+PUBLIC_ID_DRIVER=ulid # or 'uuid'
+PUBLIC_ID_COLUMN=public_id
+```
+
+### Step 5: Verify Installation
+
+Check that the package is discovered:
+
+```bash
+php artisan package:discover
+```
+
+You should see `quvel/core` in the list.
+
+Check available commands:
+
+```bash
+php artisan list
+```
+
+### Optional: Publish Additional Assets
+
+```bash
+# Publish API routes for device management (optional - only if you want to customize them)
+php artisan vendor:publish --tag=quvel-routes
+
+# Publish language files
+php artisan vendor:publish --tag=quvel-lang
+
+# Publish views (landing pages, etc.)
+php artisan vendor:publish --tag=quvel-views
+```
+
+**Important**: Routes are disabled by default. To enable device management routes, add to your `.env`:
+
+```env
+# Enable device management API routes
+QUVEL_DEVICE_ROUTES_ENABLED=true
+
+# Enable platform settings API routes
+QUVEL_PLATFORM_SETTINGS_ROUTES_ENABLED=true
+```
+
+You do **not** need to publish the routes file unless you want to customize the route definitions. The routes will work from the package once enabled via environment variables.
+
+### Troubleshooting
+
+**Package not discovered:**
+- Clear bootstrap cache: `rm bootstrap/cache/*.php`
+- Run: `php artisan package:discover`
+- Check `composer.json` for correct repository path
+
+**Migrations already exist:**
+- Migrations are automatically loaded from the package
+- Only publish if you need to customize them
+
+**Config changes not taking effect:**
+- Run: `php artisan config:clear`
+- Check that `.env` values are correct
 
 ## Table of Contents
 
