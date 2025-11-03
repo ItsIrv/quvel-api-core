@@ -34,19 +34,19 @@ class CaptchaVerifier implements CaptchaVerifierContract
 
         if ($result->isSuccessful()) {
             CaptchaVerifySuccess::dispatch(
-                token: $token,
-                score: $result->score ?? 1.0,
-                ipAddress: $ipAddress,
-                userAgent: $userAgent
+                $token,
+                $result->score ?? 1.0,
+                $ipAddress,
+                $userAgent
             );
         } else {
             $reason = implode(', ', $result->errorCodes) ?: 'Unknown error';
 
             CaptchaVerifyFailed::dispatch(
-                token: $token,
-                reason: $reason,
-                ipAddress: $ipAddress,
-                userAgent: $userAgent
+                $token,
+                $reason,
+                $ipAddress,
+                $userAgent
             );
         }
 

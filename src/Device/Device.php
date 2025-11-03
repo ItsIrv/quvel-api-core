@@ -34,11 +34,11 @@ class Device implements DeviceContract
 
         if ($device->wasRecentlyCreated) {
             DeviceRegistered::dispatch(
-                deviceId: $device->device_id,
-                userId: $device->user_id,
-                platform: $device->platform,
-                deviceName: $device->device_name,
-                pushToken: $device->push_token
+                $device->device_id,
+                $device->user_id,
+                $device->platform,
+                $device->device_name,
+                $device->push_token
             );
         }
 
@@ -82,9 +82,9 @@ class Device implements DeviceContract
         $device->deactivate();
 
         DeviceRemoved::dispatch(
-            deviceId: $device->device_id,
-            userId: $device->user_id,
-            reason: $reason
+            $device->device_id,
+            $device->user_id,
+            $reason
         );
 
         return true;

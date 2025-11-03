@@ -108,16 +108,16 @@ class InternalRequestValidator implements InternalRequestValidatorContract
 
         if ($isValid) {
             InternalRequestPassed::dispatch(
-                token: $token ?? 'none',
-                ipAddress: $ipAddress,
-                userAgent: $userAgent
+                $token ?? 'none',
+                $ipAddress,
+                $userAgent
             );
         } else {
             InternalRequestFailed::dispatch(
-                reason: $reason ?? 'Unknown validation failure',
-                token: $token,
-                ipAddress: $ipAddress,
-                userAgent: $userAgent
+                $reason ?? 'Unknown validation failure',
+                $token,
+                $ipAddress,
+                $userAgent
             );
         }
     }

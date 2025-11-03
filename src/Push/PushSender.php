@@ -35,29 +35,29 @@ class PushSender implements PushSenderContract
 
             if ($success) {
                 PushNotificationSent::dispatch(
-                    deviceIds: [$device->device_id],
-                    title: $title,
-                    body: $body,
-                    provider: $driver->getName()
+                    [$device->device_id],
+                    $title,
+                    $body,
+                    $driver->getName()
                 );
             } else {
                 PushNotificationFailed::dispatch(
-                    deviceIds: [$device->device_id],
-                    title: $title,
-                    body: $body,
-                    provider: $driver->getName(),
-                    error: 'Send operation returned false'
+                    [$device->device_id],
+                    $title,
+                    $body,
+                    $driver->getName(),
+                    'Send operation returned false'
                 );
             }
 
             return $success;
         } catch (Exception $e) {
             PushNotificationFailed::dispatch(
-                deviceIds: [$device->device_id],
-                title: $title,
-                body: $body,
-                provider: $driver->getName(),
-                error: $e->getMessage()
+                [$device->device_id],
+                $title,
+                $body,
+                $driver->getName(),
+                $e->getMessage()
             );
 
             return false;
