@@ -10,7 +10,8 @@ class UpdatePushTokenAction
 {
     public function __construct(
         private readonly Device $device
-    ) {}
+    ) {
+    }
 
     public function __invoke(string $deviceId, string $pushToken, string $provider): bool
     {

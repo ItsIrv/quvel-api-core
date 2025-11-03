@@ -10,12 +10,15 @@ use Illuminate\Queue\SerializesModels;
 
 class PushNotificationSent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public function __construct(
         public readonly array $deviceIds,
         public readonly string $title,
         public readonly string $body,
         public readonly string $provider
-    ) {}
+    ) {
+    }
 }

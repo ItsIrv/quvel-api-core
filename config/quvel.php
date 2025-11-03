@@ -440,7 +440,7 @@ return [
             ],
             \Quvel\Core\Platform\PlatformTag::SCREEN_XS->value => [
                 // Example: Extra-small screen settings
-            ]
+            ],
 
             // Add more platform-specific settings here
         ],

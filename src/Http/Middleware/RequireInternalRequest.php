@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Http\Middleware;
 
-use Quvel\Core\Services\InternalRequestValidator;
 use Closure;
 use Illuminate\Http\Request;
+use Quvel\Core\Services\InternalRequestValidator;
 
 /**
  * Middleware to ensure request is from an internal/trusted source.

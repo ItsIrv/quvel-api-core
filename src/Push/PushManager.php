@@ -7,8 +7,8 @@ namespace Quvel\Core\Push;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Manager;
 use Quvel\Core\Contracts\PushDriver;
-use Quvel\Core\Push\Drivers\FcmDriver;
 use Quvel\Core\Push\Drivers\ApnsDriver;
+use Quvel\Core\Push\Drivers\FcmDriver;
 use Quvel\Core\Push\Drivers\WebPushDriver;
 
 class PushManager extends Manager

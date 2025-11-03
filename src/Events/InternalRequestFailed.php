@@ -10,12 +10,15 @@ use Illuminate\Queue\SerializesModels;
 
 class InternalRequestFailed
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public function __construct(
         public readonly string $reason,
         public readonly ?string $token = null,
         public readonly ?string $ipAddress = null,
         public readonly ?string $userAgent = null
-    ) {}
+    ) {
+    }
 }

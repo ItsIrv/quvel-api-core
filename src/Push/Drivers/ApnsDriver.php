@@ -27,6 +27,7 @@ class ApnsDriver implements PushDriver
     public function isConfigured(): bool
     {
         $config = config('quvel.push.apns');
+
         return $this->validateConfig($config);
     }
 
@@ -66,7 +67,7 @@ class ApnsDriver implements PushDriver
     {
         $required = ['key_path', 'key_id', 'team_id', 'bundle_id'];
 
-        if (array_any($required, fn($key) => empty($config[$key]))) {
+        if (array_any($required, fn ($key) => empty($config[$key]))) {
             return false;
         }
 

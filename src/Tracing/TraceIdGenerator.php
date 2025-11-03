@@ -71,7 +71,6 @@ class TraceIdGenerator implements TraceIdGeneratorContract
         return (string) Str::uuid();
     }
 
-
     public function addToContext(string $traceId): void
     {
         Context::add('trace_id', $traceId);

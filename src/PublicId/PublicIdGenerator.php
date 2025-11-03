@@ -15,7 +15,8 @@ class PublicIdGenerator implements PublicIdGeneratorContract
 {
     public function __construct(
         private readonly PublicIdManager $manager
-    ) {}
+    ) {
+    }
 
     public function generate(): string
     {

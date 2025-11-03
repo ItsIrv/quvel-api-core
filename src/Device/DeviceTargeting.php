@@ -14,7 +14,8 @@ class DeviceTargeting implements DeviceTargetingServiceContract
 {
     public function __construct(
         private readonly Device $device
-    ) {}
+    ) {
+    }
 
     public function getTargetDevices(
         ?UserDevice $requestingDevice,

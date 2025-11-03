@@ -12,7 +12,8 @@ class GetUserDevicesAction
 {
     public function __construct(
         private readonly Device $device
-    ) {}
+    ) {
+    }
 
     public function __invoke(?int $userId): Collection
     {

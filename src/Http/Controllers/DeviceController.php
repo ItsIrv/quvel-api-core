@@ -16,7 +16,9 @@ use Quvel\Core\Push\Actions\UpdatePushTokenAction;
 
 class DeviceController
 {
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public function register(Request $request, RegisterDeviceAction $registerDevice): JsonResponse
     {
@@ -92,7 +94,7 @@ class DeviceController
     public function deactivate(Request $request, DeactivateDeviceAction $deactivateDevice): JsonResponse
     {
         $validated = $request->validate([
-            'reason' => 'nullable|string|max:255'
+            'reason' => 'nullable|string|max:255',
         ]);
 
         $deviceId = $request->header(HttpHeader::DEVICE_ID->getValue());

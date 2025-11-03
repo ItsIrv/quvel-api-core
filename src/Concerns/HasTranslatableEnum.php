@@ -21,6 +21,7 @@ trait HasTranslatableEnum
 
         if (function_exists('__')) {
             $translation = __($key);
+
             return is_string($translation) ? $translation : $this->value;
         }
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Contracts;
 
-use Quvel\Core\Models\UserDevice;
 use Illuminate\Support\Collection;
+use Quvel\Core\Models\UserDevice;
 
 interface PushSender
 {

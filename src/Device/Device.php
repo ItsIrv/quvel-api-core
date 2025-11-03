@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Device;
 
+use Illuminate\Support\Collection;
 use Quvel\Core\Contracts\Device as DeviceContract;
 use Quvel\Core\Events\DeviceRegistered;
 use Quvel\Core\Events\DeviceRemoved;
 use Quvel\Core\Models\UserDevice;
-use Illuminate\Support\Collection;
 use RuntimeException;
 
 class Device implements DeviceContract

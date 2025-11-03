@@ -10,7 +10,9 @@ use Illuminate\Queue\SerializesModels;
 
 class DeviceRegistered
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public function __construct(
         public readonly string $deviceId,
@@ -18,5 +20,6 @@ class DeviceRegistered
         public readonly string $platform,
         public readonly ?string $deviceName = null,
         public readonly ?string $pushToken = null
-    ) {}
+    ) {
+    }
 }

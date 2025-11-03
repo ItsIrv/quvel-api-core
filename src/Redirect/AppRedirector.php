@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Redirect;
 
-use Quvel\Core\Contracts\AppRedirector as AppRedirectorContract;
-use Quvel\Core\Facades\PlatformDetector;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Quvel\Core\Contracts\AppRedirector as AppRedirectorContract;
+use Quvel\Core\Facades\PlatformDetector;
 
 /**
  * Frontend redirection service for web and multi-platform apps.
@@ -128,6 +128,7 @@ class AppRedirector implements AppRedirectorContract
     public function getUrlWithMessage(string $path, string $message, array $extraParams = []): string
     {
         $queryParams = array_merge(['message' => $message], $extraParams);
+
         return $this->getUrl($path, $queryParams);
     }
 

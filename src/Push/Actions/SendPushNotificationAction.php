@@ -13,7 +13,8 @@ class SendPushNotificationAction
     public function __construct(
         private readonly PushSender $pushManager,
         private readonly DeviceTargeting $targetingService
-    ) {}
+    ) {
+    }
 
     public function __invoke(
         string $title,

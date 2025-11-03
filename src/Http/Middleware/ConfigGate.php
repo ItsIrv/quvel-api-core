@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Http\Middleware;
 
-use Quvel\Core\Contracts\AppRedirector as AppRedirectorContract;
 use Closure;
 use Illuminate\Http\Request;
+use Quvel\Core\Contracts\AppRedirector as AppRedirectorContract;
 use Symfony\Component\HttpFoundation\Response;
-
 
 /**
  * Middleware to gate features based on configuration values.
@@ -39,7 +38,7 @@ class ConfigGate
         ?string $customMessage = null
     ): Response {
         $actualValue = config($configKey);
-        
+
         $expected = $this->parseExpectedValue($expectedValue);
 
         if ($this->valuesDiffer($actualValue, $expected)) {

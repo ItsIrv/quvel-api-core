@@ -28,6 +28,7 @@ class WebPushDriver implements PushDriver
     public function isConfigured(): bool
     {
         $config = config('quvel.push.web_push');
+
         return $this->validateConfig($config);
     }
 

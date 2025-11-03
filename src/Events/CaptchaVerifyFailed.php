@@ -10,12 +10,15 @@ use Illuminate\Queue\SerializesModels;
 
 class CaptchaVerifyFailed
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public function __construct(
         public readonly string $token,
         public readonly string $reason,
         public readonly ?string $ipAddress = null,
         public readonly ?string $userAgent = null
-    ) {}
+    ) {
+    }
 }

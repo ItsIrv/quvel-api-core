@@ -22,7 +22,7 @@ class CaptchaVerifier implements CaptchaVerifierContract
     {
         if (!$this->isEnabled()) {
             return CaptchaVerificationResult::failure([
-                'Captcha is disabled'
+                'Captcha is disabled',
             ]);
         }
 

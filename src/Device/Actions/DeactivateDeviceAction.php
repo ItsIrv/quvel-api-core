@@ -10,7 +10,8 @@ class DeactivateDeviceAction
 {
     public function __construct(
         private readonly Device $device
-    ) {}
+    ) {
+    }
 
     public function __invoke(string $deviceId, string $reason = 'Manual deactivation'): bool
     {

@@ -14,7 +14,8 @@ class DeviceDetectionMiddleware
 {
     public function __construct(
         private readonly Device $device
-    ) {}
+    ) {
+    }
 
     public function handle(Request $request, Closure $next): mixed
     {

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Facade;
 use Quvel\Core\Contracts\InternalRequestValidator;
 
 /**

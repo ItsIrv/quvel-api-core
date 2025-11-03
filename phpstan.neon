@@ -1,0 +1,15 @@
+parameters:
+    level: 3
+    paths:
+        - src
+    excludePaths:
+        - vendor
+        - tests
+        - src/Models
+        - src/Providers
+        - src/Platform/Settings
+        - src/Actions
+        - src/Device/Actions
+        - src/Device/Device.php
+        - src/Push/Actions
+        - src/Database/BlueprintMacros.php

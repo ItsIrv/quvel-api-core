@@ -10,11 +10,14 @@ use Illuminate\Queue\SerializesModels;
 
 class InternalRequestPassed
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public function __construct(
         public readonly string $token,
         public readonly ?string $ipAddress = null,
         public readonly ?string $userAgent = null
-    ) {}
+    ) {
+    }
 }

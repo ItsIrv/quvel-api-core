@@ -8,15 +8,16 @@ use Exception;
 use Illuminate\Support\Collection;
 use Quvel\Core\Contracts\PushDriver;
 use Quvel\Core\Contracts\PushSender as PushSenderContract;
-use Quvel\Core\Events\PushNotificationSent;
 use Quvel\Core\Events\PushNotificationFailed;
+use Quvel\Core\Events\PushNotificationSent;
 use Quvel\Core\Models\UserDevice;
 
 class PushSender implements PushSenderContract
 {
     public function __construct(
         private readonly PushManager $manager
-    ) {}
+    ) {
+    }
 
     public function sendToDevice(UserDevice $device, string $title, string $body, array $data = []): bool
     {

@@ -44,6 +44,7 @@ class GoogleRecaptchaDriver implements CaptchaDriverInterface
 
             if (!($data['success'] ?? false)) {
                 $errorCodes = $data['error-codes'] ?? [CaptchaVerificationResult::ERROR_INVALID_RESPONSE];
+
                 return CaptchaVerificationResult::failure($errorCodes);
             }
 

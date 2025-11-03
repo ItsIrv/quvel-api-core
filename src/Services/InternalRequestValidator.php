@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Services;
 
+use Closure;
+use Illuminate\Http\Request;
 use Quvel\Core\Contracts\InternalRequestValidator as InternalRequestValidatorContract;
 use Quvel\Core\Enums\HttpHeader;
 use Quvel\Core\Events\InternalRequestFailed;
 use Quvel\Core\Events\InternalRequestPassed;
-use Illuminate\Http\Request;
-use Closure;
 
 /**
  * Service to validate if a request is internal/trusted.

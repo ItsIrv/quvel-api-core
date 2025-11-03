@@ -10,7 +10,9 @@ use Illuminate\Queue\SerializesModels;
 
 class PushNotificationFailed
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public function __construct(
         public readonly array $deviceIds,
@@ -18,5 +20,6 @@ class PushNotificationFailed
         public readonly string $body,
         public readonly string $provider,
         public readonly string $error
-    ) {}
+    ) {
+    }
 }

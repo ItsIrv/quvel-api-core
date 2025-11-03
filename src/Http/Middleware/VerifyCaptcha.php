@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Http\Middleware;
 
-use Quvel\Core\Captcha\CaptchaVerifier;
 use Closure;
 use Illuminate\Http\Request;
+use Quvel\Core\Captcha\CaptchaVerifier;
 
 /**
  * Middleware to verify captcha tokens.

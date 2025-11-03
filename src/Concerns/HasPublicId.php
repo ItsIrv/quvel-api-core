@@ -45,7 +45,9 @@ trait HasPublicId
      */
     public static function findByPublicId(string $publicId): ?static
     {
-        return static::where(new static()->getPublicIdColumn(), $publicId)->first();
+        $instance = new static();
+
+        return static::where($instance->getPublicIdColumn(), $publicId)->first();
     }
 
     /**
@@ -53,7 +55,7 @@ trait HasPublicId
      */
     public static function findByPublicIdOrFail(string $publicId): static
     {
-        return static::where(new static()->getPublicIdColumn(), $publicId)->firstOrFail();
+        return static::where((new static())->getPublicIdColumn(), $publicId)->firstOrFail();
     }
 
     /**
