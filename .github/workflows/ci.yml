@@ -14,15 +14,11 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php: [8.4]
-        laravel: [10.*, 11.*, 12.*]
+        laravel: [12.*]
         dependency-version: [prefer-stable]
         include:
-          - laravel: 10.*
-            testbench: ^8.0
-          - laravel: 11.*
-            testbench: ^9.0
           - laravel: 12.*
-            testbench: ^10.0
+            testbench: ^10.6
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
@@ -51,7 +47,7 @@ jobs:
         run: composer show -D
 
       - name: Execute tests
-        run: vendor/bin/phpunit --verbose
+        run: vendor/bin/phpunit
 
   code-style:
     runs-on: ubuntu-latest

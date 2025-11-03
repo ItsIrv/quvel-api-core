@@ -28,25 +28,25 @@
     },
     "require": {
         "php": "^8.4",
-        "illuminate/contracts": "^10.0|^11.0|^12.0",
-        "illuminate/support": "^10.0|^11.0|^12.0",
-        "illuminate/log": "^10.0|^11.0|^12.0",
-        "illuminate/http": "^10.0|^11.0|^12.0",
-        "illuminate/database": "^10.0|^11.0|^12.0",
-        "illuminate/broadcasting": "^10.0|^11.0|^12.0",
-        "illuminate/queue": "^10.0|^11.0|^12.0",
-        "illuminate/events": "^10.0|^11.0|^12.0",
-        "monolog/monolog": "^3.0",
+        "illuminate/contracts": "^12.0",
+        "illuminate/support": "^12.0",
+        "illuminate/log": "^12.0",
+        "illuminate/http": "^12.0",
+        "illuminate/database": "^12.0",
+        "illuminate/broadcasting": "^12.0",
+        "illuminate/queue": "^12.0",
+        "illuminate/events": "^12.0",
+        "monolog/monolog": "^3.9",
         "psr/log": "^3.0",
         "ext-curl": "*",
         "ext-openssl": "*"
     },
     "require-dev": {
-        "orchestra/testbench": "^8.0|^9.0",
-        "phpunit/phpunit": "^10.0|^11.0",
-        "laravel/pint": "^1.0",
-        "phpstan/phpstan": "^1.0",
-        "rector/rector": "^1.0"
+        "orchestra/testbench": "^10.6",
+        "phpunit/phpunit": "^12.4",
+        "laravel/pint": "^1.25",
+        "phpstan/phpstan": "^2.1",
+        "rector/rector": "^2.0"
     },
     "autoload": {
         "psr-4": {
