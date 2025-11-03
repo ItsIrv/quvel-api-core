@@ -45,7 +45,7 @@
         "orchestra/testbench": "^10.6",
         "phpunit/phpunit": "^12.4",
         "laravel/pint": "^1.25",
-        "phpstan/phpstan": "^2.1",
+        "larastan/larastan": "^3.7",
         "rector/rector": "^2.0"
     },
     "autoload": {
