@@ -54,7 +54,6 @@ class GoogleRecaptchaDriver implements CaptchaDriverInterface
                 challengeTimestamp: $data['challenge_ts'] ?? null,
                 hostname: $data['hostname'] ?? null
             );
-
         } catch (ConnectionException) {
             return CaptchaVerificationResult::failure([CaptchaVerificationResult::ERROR_NETWORK_ERROR]);
         }

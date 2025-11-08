@@ -20,12 +20,20 @@ interface AppRedirector
     /**
      * Redirect with a message parameter.
      */
-    public function redirectWithMessage(string $path, string $message, array $extraParams = []): RedirectResponse|Response;
+    public function redirectWithMessage(
+        string $path,
+        string $message,
+        array $extraParams = []
+    ): RedirectResponse|Response;
 
     /**
      * Redirect user back to their app (for browser contexts like Socialite).
      */
-    public function redirectToApp(string $path = '', array $queryParams = [], ?string $redirectMode = null): RedirectResponse|Response;
+    public function redirectToApp(
+        string $path = '',
+        array $queryParams = [],
+        ?string $redirectMode = null
+    ): RedirectResponse|Response;
 
     /**
      * Get the frontend URL without redirecting.

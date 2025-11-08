@@ -48,7 +48,7 @@ class TraceIdGenerator implements TraceIdGeneratorContract
     {
         $headerTraceId = $request->header(HttpHeader::TRACE_ID->getValue());
 
-        if ($headerTraceId && $this->shouldAcceptTraceHeader($request, $headerTraceId)) {
+        if ($headerTraceId && $this->shouldAcceptTraceHeader($headerTraceId)) {
             PublicTraceAccepted::dispatch(
                 $headerTraceId,
                 $request->getPathInfo(),
@@ -82,9 +82,9 @@ class TraceIdGenerator implements TraceIdGeneratorContract
     }
 
     /**
-     * Determine if we should accept the trace header from request.
+     * Determine if we should accept the trace header from the request.
      */
-    public function shouldAcceptTraceHeader(Request $request, string $traceId): bool
+    public function shouldAcceptTraceHeader(string $traceId): bool
     {
         if (!config('quvel.tracing.accept_external_trace_ids', true)) {
             return false;

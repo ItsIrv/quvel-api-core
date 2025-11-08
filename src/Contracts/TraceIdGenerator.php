@@ -24,7 +24,7 @@ interface TraceIdGenerator
     /**
      * Determine if we should accept the trace header from request.
      */
-    public function shouldAcceptTraceHeader(Request $request, string $traceId): bool;
+    public function shouldAcceptTraceHeader(string $traceId): bool;
 
     /**
      * Add trace ID to context.

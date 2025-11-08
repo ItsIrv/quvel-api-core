@@ -12,11 +12,22 @@ use Quvel\Core\Contracts\AppRedirector;
 /**
  * Multi-platform redirect facade.
  *
- * @method static RedirectResponse|Response redirect(string $path = '', array $queryParams = []) Smart redirect based on platform and configured redirect mode
- * @method static RedirectResponse|Response redirectWithMessage(string $path, string $message, array $extraParams = []) Redirect with a message parameter
- * @method static RedirectResponse|Response redirectToApp(string $path = '', array $queryParams = [], ?string $redirectMode = null) Redirect user back to their app (for browser contexts like Socialite)
- * @method static string getUrl(string $path = '', array $queryParams = []) Get the frontend URL without redirecting
- * @method static string getUrlWithMessage(string $path, string $message, array $extraParams = []) Get URL with message parameter
+ * @method static RedirectResponse|Response redirect(string $path = '', array $queryParams = [])
+ *     Smart redirect based on platform and configured redirect mode
+ * @method static RedirectResponse|Response redirectWithMessage(
+ *     string $path,
+ *     string $message,
+ *     array $extraParams = []
+ * ) Redirect with a message parameter
+ * @method static RedirectResponse|Response redirectToApp(
+ *     string $path = '',
+ *     array $queryParams = [],
+ *     ?string $redirectMode = null
+ * ) Redirect user back to their app (for browser contexts like Socialite)
+ * @method static string getUrl(string $path = '', array $queryParams = [])
+ *     Get the frontend URL without redirecting
+ * @method static string getUrlWithMessage(string $path, string $message, array $extraParams = [])
+ *     Get URL with message parameter
  * @method static bool isValidRedirectUrl(string $url) Validate if a redirect URL is safe
  *
  * @see AppRedirector

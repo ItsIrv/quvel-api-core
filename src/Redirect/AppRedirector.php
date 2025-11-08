@@ -76,8 +76,11 @@ class AppRedirector implements AppRedirectorContract
      * @param array $extraParams Additional query parameters
      * @return RedirectResponse|Response
      */
-    public function redirectWithMessage(string $path, string $message, array $extraParams = []): RedirectResponse|Response
-    {
+    public function redirectWithMessage(
+        string $path,
+        string $message,
+        array $extraParams = []
+    ): RedirectResponse|Response {
         $queryParams = array_merge(['message' => $message], $extraParams);
 
         return $this->redirect($path, $queryParams);
@@ -94,8 +97,11 @@ class AppRedirector implements AppRedirectorContract
      * @param string|null $redirectMode Override default redirect mode
      * @return RedirectResponse|Response
      */
-    public function redirectToApp(string $path = '', array $queryParams = [], ?string $redirectMode = null): RedirectResponse|Response
-    {
+    public function redirectToApp(
+        string $path = '',
+        array $queryParams = [],
+        ?string $redirectMode = null
+    ): RedirectResponse|Response {
         $mode = $redirectMode ?? config('quvel.frontend.redirect_mode', 'universal_links');
 
         return match ($mode) {
@@ -226,5 +232,4 @@ class AppRedirector implements AppRedirectorContract
             'platforms' => PlatformDetector::getPlatforms(),
         ]);
     }
-
 }

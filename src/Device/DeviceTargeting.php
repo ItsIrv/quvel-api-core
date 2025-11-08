@@ -55,5 +55,4 @@ class DeviceTargeting implements DeviceTargetingServiceContract
             return $device->hasValidPushToken();
         });
     }
-
 }

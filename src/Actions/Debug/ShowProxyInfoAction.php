@@ -84,7 +84,9 @@ class ShowProxyInfoAction
                 'app_url' => $this->config->get('app.url'),
                 'url_helper' => url('/'),
                 'asset_helper' => asset('test.css'),
-                'route_helper' => function_exists('route') && route('login', [], false) ? route('login') : 'No login route found',
+                'route_helper' => function_exists('route') && route('login', [], false)
+                    ? route('login')
+                    : 'No login route found',
             ],
             'all_headers' => $request->headers->all(),
             'timestamp' => now()->toISOString(),
