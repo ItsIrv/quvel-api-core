@@ -39,16 +39,18 @@ class CaptchaVerifier implements CaptchaVerifierContract
                 $ipAddress,
                 $userAgent
             );
-        } else {
-            $reason = implode(', ', $result->errorCodes) ?: 'Unknown error';
 
-            CaptchaVerifyFailed::dispatch(
-                $token,
-                $reason,
-                $ipAddress,
-                $userAgent
-            );
+            return $result;
         }
+
+        $reason = implode(', ', $result->errorCodes) ?: 'Unknown error';
+
+        CaptchaVerifyFailed::dispatch(
+            $token,
+            $reason,
+            $ipAddress,
+            $userAgent
+        );
 
         return $result;
     }
