@@ -64,8 +64,6 @@ class ConfigGate
 
     /**
      * Type-safe comparison of values.
-     *
-     * @param bool|int|null|string $expected
      */
     private function valuesDiffer(mixed $actual, string|int|bool|null $expected): bool
     {

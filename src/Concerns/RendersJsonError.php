@@ -61,7 +61,7 @@ trait RendersJsonError
     {
         $message = $this->getMessage();
 
-        if (function_exists('__') && str_contains($message, '.')) {
+        if (function_exists('__') && str_contains((string) $message, '.')) {
             $translation = __($message);
 
             if (is_string($translation) && $translation !== $message) {

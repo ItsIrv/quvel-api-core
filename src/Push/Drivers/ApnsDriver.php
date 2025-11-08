@@ -57,7 +57,7 @@ class ApnsDriver implements PushDriver
             ],
         ];
 
-        if (!empty($data)) {
+        if ($data !== []) {
             $payload = array_merge($payload, $data);
         }
 
@@ -68,7 +68,7 @@ class ApnsDriver implements PushDriver
     {
         $required = ['key_path', 'key_id', 'team_id', 'bundle_id'];
 
-        if (array_any($required, fn ($key) => empty($config[$key]))) {
+        if (array_any($required, fn ($key): bool => empty($config[$key]))) {
             return false;
         }
 
@@ -93,7 +93,7 @@ class ApnsDriver implements PushDriver
             'content-type: application/json',
         ];
 
-        $url = "https://$host/3/device/$deviceToken";
+        $url = sprintf('https://%s/3/device/%s', $host, $deviceToken);
 
         $ch = curl_init();
 

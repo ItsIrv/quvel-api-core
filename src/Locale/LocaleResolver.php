@@ -40,7 +40,7 @@ class LocaleResolver implements LocaleResolverContract
 
         if (config('quvel.locale.normalize_locales', true)) {
             $normalized = $this->normalizeLocale($locale);
-            $normalizedAllowed = array_map([$this, 'normalizeLocale'], $allowedLocales);
+            $normalizedAllowed = array_map($this->normalizeLocale(...), $allowedLocales);
 
             return in_array($normalized, $normalizedAllowed, true);
         }
@@ -80,7 +80,7 @@ class LocaleResolver implements LocaleResolverContract
             }
         }
 
-        if (empty($locales)) {
+        if ($locales === []) {
             return config('quvel.locale.fallback_locale', 'en');
         }
 

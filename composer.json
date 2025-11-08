@@ -49,7 +49,7 @@
         "rector/rector": "^2.2",
         "vimeo/psalm": "^6.13",
         "psalm/plugin-laravel": "^3.0",
-        "phpmd/phpmd": "^2.15",
+        "phpmd/phpmd": "3.x-dev",
         "squizlabs/php_codesniffer": "^4.0"
     },
     "autoload": {
@@ -68,21 +68,32 @@
     "scripts": {
         "test": "vendor/bin/phpunit",
         "test-coverage": "vendor/bin/phpunit --coverage",
-        "format": "vendor/bin/pint",
-        "format-check": "vendor/bin/pint --test",
+        "format": "vendor/bin/pint --test",
+        "format-fix": "vendor/bin/pint",
         "analyse": "vendor/bin/phpstan analyse --memory-limit=512M",
         "psalm": "vendor/bin/psalm --no-cache",
+        "psalm-fix": "vendor/bin/psalm --alter --issues=MissingParamType",
         "phpmd": "vendor/bin/phpmd src text phpmd.xml 2>&1 | grep -v '^PHP Deprecated:' | grep -v '^Deprecated:' || true",
         "phpcs": "vendor/bin/phpcs",
-        "refactor": "vendor/bin/rector process",
-        "refactor-dry": "vendor/bin/rector process --dry-run",
+        "phpcs-fix": "vendor/bin/phpcbf",
+        "refactor": "vendor/bin/rector process --dry-run",
+        "refactor-fix": "vendor/bin/rector process",
         "ci": [
-            "@format-check",
+            "@format",
             "@analyse",
             "@psalm",
             "@phpmd",
             "@phpcs",
-            "@refactor-dry",
+            "@refactor",
+            "@test"
+        ],
+        "ci-fix": [
+            "@format-fix",
+            "@analyse",
+            "@psalm-fix",
+            "@phpmd",
+            "@phpcs-fix",
+            "@refactor-fix",
             "@test"
         ]
     },

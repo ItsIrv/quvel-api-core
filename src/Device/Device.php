@@ -20,7 +20,9 @@ class Device implements DeviceContract
             $userDeviceCount = UserDevice::forUser($deviceData['user_id'])->active()->count();
 
             if ($userDeviceCount >= $maxDevices) {
-                throw new RuntimeException("Maximum number of devices ($maxDevices) reached for this user");
+                throw new RuntimeException(
+                    sprintf('Maximum number of devices (%s) reached for this user', $maxDevices)
+                );
             }
         }
 
@@ -75,7 +77,7 @@ class Device implements DeviceContract
     {
         $device = $this->findDevice($deviceId);
 
-        if (!$device) {
+        if (!$device instanceof \Quvel\Core\Models\UserDevice) {
             return false;
         }
 

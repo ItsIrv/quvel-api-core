@@ -34,7 +34,7 @@ class DeviceDetectionMiddleware
             $this->device->updateLastSeen($deviceId);
 
             $device = $this->device->findDevice($deviceId);
-            if ($device) {
+            if ($device instanceof \Quvel\Core\Models\UserDevice) {
                 Context::add('device', [
                     'id' => $device->device_id,
                     'platform' => $device->platform,

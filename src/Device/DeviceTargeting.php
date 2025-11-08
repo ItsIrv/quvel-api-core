@@ -22,7 +22,7 @@ class DeviceTargeting implements DeviceTargetingServiceContract
         ?int $userId,
         ?string $scope = null
     ): Collection {
-        $scope = $scope ?? $this->getDefaultScope();
+        $scope ??= $this->getDefaultScope();
 
         return match ($scope) {
             'requesting_device' => $this->getRequestingDevice($requestingDevice),
@@ -51,8 +51,8 @@ class DeviceTargeting implements DeviceTargetingServiceContract
             return $this->getRequestingDevice($requestingDevice);
         }
 
-        return $this->device->getUserDevices($userId)->filter(function (UserDevice $device) {
-            return $device->hasValidPushToken();
-        });
+        return $this->device->getUserDevices($userId)->filter(
+            fn (UserDevice $device): bool => $device->hasValidPushToken()
+        );
     }
 }

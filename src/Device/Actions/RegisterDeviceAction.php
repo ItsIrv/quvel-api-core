@@ -8,9 +8,6 @@ use Quvel\Core\Contracts\Device;
 use Quvel\Core\Models\UserDevice;
 use RuntimeException;
 
-use function Quvel\Core\Actions\auth;
-use function Quvel\Core\Actions\config;
-
 class RegisterDeviceAction
 {
     public function __construct(

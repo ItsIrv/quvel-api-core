@@ -16,8 +16,6 @@ class PlatformSettingsManager extends Manager
 {
     /**
      * Get the default driver name.
-     *
-     * @return string
      */
     public function getDefaultDriver(): string
     {
@@ -26,8 +24,6 @@ class PlatformSettingsManager extends Manager
 
     /**
      * Create the config driver.
-     *
-     * @return ConfigDriver
      */
     public function createConfigDriver(): ConfigDriver
     {
@@ -36,8 +32,6 @@ class PlatformSettingsManager extends Manager
 
     /**
      * Create the database driver.
-     *
-     * @return DatabaseDriver
      */
     public function createDatabaseDriver(): DatabaseDriver
     {

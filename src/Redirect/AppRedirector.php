@@ -59,7 +59,6 @@ class AppRedirector implements AppRedirectorContract
      *
      * @param string $path Path relative to frontend base URL
      * @param array $queryParams Query parameters to append
-     * @return RedirectResponse|Response
      */
     public function redirect(string $path = '', array $queryParams = []): RedirectResponse|Response
     {
@@ -74,7 +73,6 @@ class AppRedirector implements AppRedirectorContract
      * @param string $path Path relative to frontend base URL
      * @param string $message Message to include in query parameters
      * @param array $extraParams Additional query parameters
-     * @return RedirectResponse|Response
      */
     public function redirectWithMessage(
         string $path,
@@ -95,7 +93,6 @@ class AppRedirector implements AppRedirectorContract
      * @param string $path Path relative to frontend base URL
      * @param array $queryParams Query parameters to append
      * @param string|null $redirectMode Override default redirect mode
-     * @return RedirectResponse|Response
      */
     public function redirectToApp(
         string $path = '',
@@ -151,7 +148,7 @@ class AppRedirector implements AppRedirectorContract
     public function isValidRedirectUrl(string $url): bool
     {
         $allowedDomains = config('quvel.frontend.allowed_redirect_domains', []);
-        $frontendUrl = parse_url(config('quvel.frontend.url'));
+        $frontendUrl = parse_url((string) config('quvel.frontend.url'));
 
         if ($frontendUrl && isset($frontendUrl['host'])) {
             $allowedDomains[] = $frontendUrl['host'];
@@ -181,11 +178,11 @@ class AppRedirector implements AppRedirectorContract
      */
     private function buildWebUrl(string $path, array $queryParams): string
     {
-        $base = rtrim(config('quvel.frontend.url', 'http://localhost:3000'), '/');
+        $base = rtrim((string) config('quvel.frontend.url', 'http://localhost:3000'), '/');
         $path = ltrim($path, '/');
-        $url = $path ? "$base/$path" : $base;
+        $url = $path !== '' && $path !== '0' ? sprintf('%s/%s', $base, $path) : $base;
 
-        if (!empty($queryParams)) {
+        if ($queryParams !== []) {
             $url .= '?' . http_build_query($queryParams);
         }
 

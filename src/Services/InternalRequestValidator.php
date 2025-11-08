@@ -34,7 +34,7 @@ class InternalRequestValidator implements InternalRequestValidatorContract
      */
     public function isInternalRequest(Request $request): bool
     {
-        if (static::$customValidator !== null) {
+        if (static::$customValidator instanceof \Closure) {
             $isValid = (static::$customValidator)($request);
             $this->dispatchEvent($request, $isValid, $isValid ? null : 'Custom validator failed');
 

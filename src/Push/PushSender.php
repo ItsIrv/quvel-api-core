@@ -27,7 +27,7 @@ class PushSender implements PushSenderContract
 
         $driver = $this->getDriverForDevice($device);
 
-        if (!$driver) {
+        if (!$driver instanceof \Quvel\Core\Contracts\PushDriver) {
             return false;
         }
 
@@ -50,13 +50,13 @@ class PushSender implements PushSenderContract
                 );
 
             return $success;
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             PushNotificationFailed::dispatch(
                 [$device->device_id],
                 $title,
                 $body,
                 $driver->getName(),
-                $e->getMessage()
+                $exception->getMessage()
             );
 
             return false;
@@ -68,7 +68,7 @@ class PushSender implements PushSenderContract
         $batchSize = config('quvel.push.batch_size', 1000);
         $results = [];
 
-        $devices->chunk($batchSize)->each(function ($batch) use ($title, $body, $data, &$results) {
+        $devices->chunk($batchSize)->each(function ($batch) use ($title, $body, $data, &$results): void {
             foreach ($batch as $device) {
                 $results[$device->device_id] = $this->sendToDevice($device, $title, $body, $data);
             }

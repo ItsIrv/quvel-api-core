@@ -42,7 +42,7 @@ class PlatformSetting extends Model
     {
         $allSettings = [self::getShared()];
 
-        if (!empty($platforms)) {
+        if ($platforms !== []) {
             $platformRecords = self::whereIn('platform', $platforms)->get();
 
             foreach ($platforms as $platform) {

@@ -64,7 +64,7 @@ class TraceIdGenerator implements TraceIdGeneratorContract
 
     public function generateTraceId(): string
     {
-        if (static::$customGenerator !== null) {
+        if (static::$customGenerator instanceof \Closure) {
             return (static::$customGenerator)();
         }
 
@@ -90,11 +90,11 @@ class TraceIdGenerator implements TraceIdGeneratorContract
             return false;
         }
 
-        if (empty($traceId)) {
+        if ($traceId === '' || $traceId === '0') {
             return false;
         }
 
-        if (static::$customValidator !== null) {
+        if (static::$customValidator instanceof \Closure) {
             return (static::$customValidator)($traceId);
         }
 

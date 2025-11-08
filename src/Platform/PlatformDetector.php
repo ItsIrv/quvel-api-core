@@ -32,7 +32,7 @@ class PlatformDetector implements PlatformDetectorContract
             return [PlatformTag::WEB->value];
         }
 
-        $tags = array_map('trim', explode(',', $headerValue, 5));
+        $tags = array_map(trim(...), explode(',', $headerValue, 5));
 
         $validTags = [];
         foreach ($tags as $tag) {
@@ -41,7 +41,7 @@ class PlatformDetector implements PlatformDetectorContract
             }
         }
 
-        return !empty($validTags) ? $validTags : [PlatformTag::WEB->value];
+        return $validTags === [] ? [PlatformTag::WEB->value] : $validTags;
     }
 
     /**

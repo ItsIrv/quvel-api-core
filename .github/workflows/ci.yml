@@ -47,11 +47,11 @@ jobs:
         run: composer show -D
 
       - name: Execute tests
-        run: vendor/bin/phpunit
+        run: composer test
 
-  code-style:
+  code-quality:
     runs-on: ubuntu-latest
-    name: Code Style (Pint)
+    name: Code Quality
 
     steps:
       - name: Checkout code
@@ -61,11 +61,26 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.4
-          extensions: dom, curl, libxml, mbstring, zip
+          extensions: dom, curl, libxml, mbstring, zip, openssl
           coverage: none
 
       - name: Install dependencies
         run: composer update --prefer-stable --prefer-dist --no-interaction
 
-      - name: Run Pint
-        run: vendor/bin/pint --test
+      - name: Run Code Style Check (Pint)
+        run: composer format
+
+      - name: Run Static Analysis (PHPStan)
+        run: composer analyse
+
+      - name: Run Static Analysis (Psalm)
+        run: composer psalm
+
+      - name: Run Mess Detector (PHPMD)
+        run: composer phpmd
+
+      - name: Run Code Sniffer (PHPCS)
+        run: composer phpcs
+
+      - name: Run Refactoring Check (Rector)
+        run: composer refactor

@@ -19,9 +19,13 @@ class SanitizedContext implements ArrayAccess, JsonSerializable
      * Sanitization strategies
      */
     public const string HASH = 'hash';
+
     public const string MASK = 'mask';
+
     public const string DOMAIN_ONLY = 'domain_only';
+
     public const string TRUNCATE = 'truncate';
+
     public const string REMOVE = 'remove';
 
     /**

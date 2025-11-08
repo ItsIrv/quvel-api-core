@@ -16,10 +16,6 @@ use Quvel\Core\Push\Actions\UpdatePushTokenAction;
 
 class DeviceController
 {
-    public function __construct()
-    {
-    }
-
     public function register(Request $request, RegisterDeviceAction $registerDevice): JsonResponse
     {
         $validated = $request->validate([
@@ -55,10 +51,10 @@ class DeviceController
                     'updated_at' => $device->updated_at,
                 ],
             ]);
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => $exception->getMessage(),
             ], 400);
         }
     }
@@ -126,21 +122,19 @@ class DeviceController
 
             return response()->json([
                 'success' => true,
-                'devices' => $devices->map(function ($device) {
-                    return [
-                        'device_id' => $device->device_id,
-                        'device_name' => $device->device_name,
-                        'platform' => $device->platform,
-                        'last_seen_at' => $device->last_seen_at,
-                        'is_active' => $device->is_active,
-                        'created_at' => $device->created_at,
-                    ];
-                }),
+                'devices' => $devices->map(fn ($device): array => [
+                    'device_id' => $device->device_id,
+                    'device_name' => $device->device_name,
+                    'platform' => $device->platform,
+                    'last_seen_at' => $device->last_seen_at,
+                    'is_active' => $device->is_active,
+                    'created_at' => $device->created_at,
+                ]),
             ]);
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => $exception->getMessage(),
             ], 401);
         }
     }

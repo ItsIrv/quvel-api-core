@@ -72,7 +72,7 @@ class CaptchaVerifier implements CaptchaVerifierContract
 
     private function getDriver(): CaptchaDriverInterface
     {
-        if ($this->driver === null) {
+        if (!$this->driver instanceof CaptchaDriverInterface) {
             $driverClass = config('quvel.captcha.driver', GoogleRecaptchaDriver::class);
             $this->driver = app($driverClass);
         }

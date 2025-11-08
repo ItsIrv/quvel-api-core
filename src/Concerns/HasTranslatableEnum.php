@@ -17,7 +17,7 @@ trait HasTranslatableEnum
      */
     public function getTranslatedMessage(?string $context = null): string
     {
-        $key = $context ? "$context.$this->value" : $this->value;
+        $key = $context ? sprintf('%s.%s', $context, $this->value) : $this->value;
 
         if (function_exists('__')) {
             $translation = __($key);
@@ -33,6 +33,6 @@ trait HasTranslatableEnum
      */
     public function getTranslationKey(?string $context = null): string
     {
-        return $context ? "$context.$this->value" : $this->value;
+        return $context ? sprintf('%s.%s', $context, $this->value) : $this->value;
     }
 }

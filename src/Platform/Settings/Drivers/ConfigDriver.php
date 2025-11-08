@@ -26,7 +26,7 @@ class ConfigDriver implements PlatformSettings
         $allSettings = [$this->getSharedSettings()];
 
         foreach ($platforms as $platform) {
-            $platformSettings = config("quvel.platform_settings.platforms.$platform", []);
+            $platformSettings = config('quvel.platform_settings.platforms.' . $platform, []);
 
             if (!empty($platformSettings)) {
                 $allSettings[] = $platformSettings;

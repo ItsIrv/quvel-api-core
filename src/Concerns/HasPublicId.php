@@ -17,7 +17,7 @@ trait HasPublicId
      */
     protected static function bootHasPublicId(): void
     {
-        static::creating(static function (Model $model) {
+        static::creating(static function (Model $model): void {
             if (empty($model->{$model->getPublicIdColumn()})) {
                 $model->{$model->getPublicIdColumn()} = $model->generatePublicId();
             }
@@ -55,7 +55,9 @@ trait HasPublicId
      */
     public static function findByPublicIdOrFail(string $publicId): static
     {
-        return static::where((new static())->getPublicIdColumn(), $publicId)->firstOrFail();
+        $instance = new static();
+
+        return static::where($instance->getPublicIdColumn(), $publicId)->firstOrFail();
     }
 
     /**
