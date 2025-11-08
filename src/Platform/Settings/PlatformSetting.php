@@ -15,6 +15,8 @@ use Illuminate\Support\Carbon;
  * @property array $settings
  * @property Carbon $created_at
  * @property Carbon $updated_at
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder whereIn(string $column, mixed $values)
  */
 class PlatformSetting extends Model
 {

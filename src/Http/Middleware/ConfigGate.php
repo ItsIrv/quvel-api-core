@@ -64,8 +64,10 @@ class ConfigGate
 
     /**
      * Type-safe comparison of values.
+     *
+     * @param bool|int|null|string $expected
      */
-    private function valuesDiffer(mixed $actual, mixed $expected): bool
+    private function valuesDiffer(mixed $actual, string|int|bool|null $expected): bool
     {
         if (is_bool($expected) || is_bool($actual)) {
             return (bool)$actual !== (bool)$expected;

@@ -8,6 +8,7 @@ use JsonException;
 use Quvel\Core\Contracts\PushDriver;
 use Quvel\Core\Models\UserDevice;
 use Quvel\Core\Platform\PlatformTag;
+use RuntimeException;
 
 class ApnsDriver implements PushDriver
 {
@@ -36,7 +37,7 @@ class ApnsDriver implements PushDriver
      */
     public function send(UserDevice $device, string $title, string $body, array $data = []): bool
     {
-        if (!$device->hasValidPushToken()) {
+        if (!$device->hasValidPushToken() || !$device->push_token) {
             return false;
         }
 
@@ -95,6 +96,11 @@ class ApnsDriver implements PushDriver
         $url = "https://$host/3/device/$deviceToken";
 
         $ch = curl_init();
+
+        if ($ch === false) {
+            return false;
+        }
+
         curl_setopt_array($ch, [
             CURLOPT_URL => $url,
             CURLOPT_POST => true,
@@ -145,7 +151,17 @@ class ApnsDriver implements PushDriver
 
     private function signWithES256(string $data, string $keyPath): string
     {
-        $privateKey = openssl_pkey_get_private(file_get_contents($keyPath));
+        $keyContents = file_get_contents($keyPath);
+
+        if ($keyContents === false) {
+            throw new RuntimeException('Failed to read APNS key file');
+        }
+
+        $privateKey = openssl_pkey_get_private($keyContents);
+
+        if ($privateKey === false) {
+            throw new RuntimeException('Failed to load APNS private key');
+        }
 
         openssl_sign($data, $signature, $privateKey, OPENSSL_ALGO_SHA256);
 

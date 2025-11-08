@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Quvel\Core\Providers;
 
-use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Quvel\Core\Captcha\CaptchaVerifier;
@@ -174,10 +173,10 @@ class CoreServiceProvider extends ServiceProvider
      */
     protected function addMiddlewareToGroups(array $config): void
     {
-        $kernel = $this->app->make(Kernel::class);
+        /** @var \Illuminate\Foundation\Http\Kernel $kernel */
+        $kernel = $this->app->make(\Illuminate\Foundation\Http\Kernel::class);
         $aliases = $config['aliases'] ?? [];
 
-        // Add to web group
         $webMiddleware = $config['groups']['web'] ?? [];
         foreach ($webMiddleware as $alias) {
             if (isset($aliases[$alias])) {
@@ -185,7 +184,6 @@ class CoreServiceProvider extends ServiceProvider
             }
         }
 
-        // Add to api group
         $apiMiddleware = $config['groups']['api'] ?? [];
         foreach ($apiMiddleware as $alias) {
             if (isset($aliases[$alias])) {

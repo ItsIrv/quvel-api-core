@@ -9,6 +9,7 @@ use Quvel\Core\Contracts\PushDriver;
 use Quvel\Core\Models\UserDevice;
 use Quvel\Core\Platform\PlatformTag;
 use Random\RandomException;
+use RuntimeException;
 
 class WebPushDriver implements PushDriver
 {
@@ -37,7 +38,7 @@ class WebPushDriver implements PushDriver
      */
     public function send(UserDevice $device, string $title, string $body, array $data = []): bool
     {
-        if (!$device->hasValidPushToken()) {
+        if (!$device->hasValidPushToken() || !$device->push_token) {
             return false;
         }
 
@@ -74,6 +75,11 @@ class WebPushDriver implements PushDriver
     private function sendWebPush(string $endpoint, array $payload, array $config): bool
     {
         $parsedEndpoint = parse_url($endpoint);
+
+        if ($parsedEndpoint === false || !isset($parsedEndpoint['scheme'], $parsedEndpoint['host'])) {
+            return false;
+        }
+
         $audience = $parsedEndpoint['scheme'] . '://' . $parsedEndpoint['host'];
 
         $vapidHeader = $this->generateVapidHeader($audience, $config);
@@ -87,6 +93,11 @@ class WebPushDriver implements PushDriver
         ];
 
         $ch = curl_init();
+
+        if ($ch === false) {
+            return false;
+        }
+
         curl_setopt_array($ch, [
             CURLOPT_URL => $endpoint,
             CURLOPT_POST => true,
@@ -143,6 +154,10 @@ class WebPushDriver implements PushDriver
         $key = $this->convertVapidKeyToPem($privateKey);
         $privateKeyResource = openssl_pkey_get_private($key);
 
+        if ($privateKeyResource === false) {
+            throw new RuntimeException('Failed to load VAPID private key');
+        }
+
         openssl_sign($data, $signature, $privateKeyResource, OPENSSL_ALGO_SHA256);
 
         return $this->base64UrlEncode($signature);
@@ -174,6 +189,10 @@ class WebPushDriver implements PushDriver
             $nonce,
             $tag
         );
+
+        if ($encrypted === false) {
+            throw new RuntimeException('Failed to encrypt payload');
+        }
 
         return $salt . pack('N', 4096) . pack('C', strlen($key)) . $key . $encrypted . $tag;
     }

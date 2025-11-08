@@ -34,14 +34,13 @@ class PushSender implements PushSenderContract
         try {
             $success = $driver->send($device, $title, $body, $data);
 
-            if ($success) {
+            $success ?
                 PushNotificationSent::dispatch(
                     [$device->device_id],
                     $title,
                     $body,
                     $driver->getName()
-                );
-            } else {
+                ) :
                 PushNotificationFailed::dispatch(
                     [$device->device_id],
                     $title,
@@ -49,7 +48,6 @@ class PushSender implements PushSenderContract
                     $driver->getName(),
                     'Send operation returned false'
                 );
-            }
 
             return $success;
         } catch (Exception $e) {

@@ -57,12 +57,8 @@ enum HttpHeader: string
             self::ACCEPT_LANGUAGE => 'quvel.headers.accept_language',
         };
 
-        if ($configKey) {
-            $configValue = config($configKey, $this->value);
+        $configValue = config($configKey, $this->value);
 
-            return $configValue ?? $this->value;
-        }
-
-        return $this->value;
+        return $configValue ?? $this->value;
     }
 }

@@ -27,6 +27,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Carbon|null $last_seen_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ *
+ * @method static Builder forUser(int $userId)
+ * @method static Builder active()
  */
 class UserDevice extends Model
 {

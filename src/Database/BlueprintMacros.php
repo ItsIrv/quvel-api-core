@@ -29,10 +29,10 @@ class BlueprintMacros
             /** @var Blueprint $this */
             $col = PublicId::schema($this, $column);
 
-            $col->unique();
+            $col->unique($column);
 
             if ($index) {
-                $col->index();
+                $col->index($column);
             }
 
             return $col;

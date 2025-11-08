@@ -48,12 +48,12 @@ class InternalRequestValidator implements InternalRequestValidatorContract
         $reason = null;
 
         if (!$isValid) {
+            $reason = 'Invalid API key';
+
             if (!$isValidIp && !$isValidApiKey) {
                 $reason = 'Invalid IP and API key';
             } elseif (!$isValidIp) {
                 $reason = 'Invalid IP address';
-            } else {
-                $reason = 'Invalid API key';
             }
         }
 
@@ -112,13 +112,15 @@ class InternalRequestValidator implements InternalRequestValidatorContract
                 $ipAddress,
                 $userAgent
             );
-        } else {
-            InternalRequestFailed::dispatch(
-                $reason ?? 'Unknown validation failure',
-                $token,
-                $ipAddress,
-                $userAgent
-            );
+
+            return;
         }
+
+        InternalRequestFailed::dispatch(
+            $reason ?? 'Unknown validation failure',
+            $token,
+            $ipAddress,
+            $userAgent
+        );
     }
 }

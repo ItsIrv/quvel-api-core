@@ -10,6 +10,8 @@ use JsonSerializable;
 /**
  * Context wrapper that applies sanitization rules to sensitive data before logging.
  * Provides explicit, declarative control over PII sanitization for compliance.
+ *
+ * @implements ArrayAccess<string, mixed>
  */
 class SanitizedContext implements ArrayAccess, JsonSerializable
 {
@@ -81,9 +83,11 @@ class SanitizedContext implements ArrayAccess, JsonSerializable
         foreach ($this->data as $key => $value) {
             if (isset($this->sanitizeRules[$key])) {
                 $sanitized[$key] = $this->applySanitization($value, $this->sanitizeRules[$key]);
-            } else {
-                $sanitized[$key] = $value;
+
+                continue;
             }
+
+            $sanitized[$key] = $value;
         }
 
         return $sanitized;
@@ -167,7 +171,9 @@ class SanitizedContext implements ArrayAccess, JsonSerializable
 
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->data[$offset] = $value;
+        if ($offset) {
+            $this->data[$offset] = $value;
+        }
     }
 
     public function offsetUnset(mixed $offset): void

@@ -56,7 +56,7 @@ class TraceIdGenerator implements TraceIdGeneratorContract
                 $request->userAgent()
             );
 
-            return (string) $headerTraceId;
+            return $headerTraceId;
         }
 
         return $this->generateTraceId();
